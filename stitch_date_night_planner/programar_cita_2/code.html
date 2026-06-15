@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>L'Amour Moderne - Programar Cita</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#e7e1de",
+                        "surface": "#fbf8ff",
+                        "tertiary": "#5e5b59",
+                        "tertiary-fixed-dim": "#cbc5c2",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#5b403f",
+                        "on-tertiary-fixed-variant": "#494644",
+                        "on-primary-container": "#fffbff",
+                        "surface-bright": "#fbf8ff",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "surface-container-low": "#f4f2ff",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary": "#b7102a",
+                        "secondary-container": "#fdd5e4",
+                        "secondary-fixed": "#ffd8e7",
+                        "on-secondary-container": "#795a67",
+                        "tertiary-container": "#777471",
+                        "surface-variant": "#e0e0fc",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2d2f44",
+                        "primary-fixed": "#ffdad8",
+                        "on-secondary-fixed-variant": "#5b3f4b",
+                        "surface-dim": "#d7d8f4",
+                        "surface-tint": "#bb152c",
+                        "on-tertiary-fixed": "#1d1b19",
+                        "background": "#fbf8ff",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#ffb3b1",
+                        "primary-container": "#db313f",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#2b141f",
+                        "surface-container-high": "#e6e6ff",
+                        "on-primary-fixed": "#410007",
+                        "on-background": "#181a2e",
+                        "secondary": "#745662",
+                        "on-primary-fixed-variant": "#92001c",
+                        "secondary-fixed-dim": "#e3bccb",
+                        "on-surface": "#181a2e",
+                        "on-primary": "#ffffff",
+                        "outline": "#8f6f6e",
+                        "surface-container-highest": "#e0e0fc",
+                        "inverse-on-surface": "#f1efff",
+                        "outline-variant": "#e4bebc",
+                        "surface-container": "#edecff",
+                        "on-tertiary-container": "#fffbff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "max-width": "1200px",
+                        "sm": "12px",
+                        "xl": "80px",
+                        "margin-desktop": "auto",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "md": "24px",
+                        "margin-mobile": "20px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Literata"],
+                        "display-lg-mobile": ["Literata"],
+                        "display-lg": ["Literata"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .custom-shadow {
+            box-shadow: 0 10px 25px -5px rgba(250, 210, 225, 0.4), 0 8px 10px -6px rgba(250, 210, 225, 0.1);
+        }
+        .date-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        .time-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Top Navigation (Mobile) -->
+<nav class="md:hidden flex justify-between items-center px-md py-sm w-full bg-surface shadow-sm fixed top-0 z-50">
+<div class="font-headline-md text-headline-md text-primary">L'Amour Moderne</div>
+<button class="text-on-surface-variant p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</nav>
+<!-- Side Navigation (Desktop) -->
+<aside class="hidden md:flex flex-col h-screen p-md gap-lg bg-surface-container-low shadow-md fixed left-0 w-64 z-40">
+<!-- Header -->
+<div class="flex flex-col items-center pt-md pb-sm border-b border-outline-variant/30">
+<div class="w-20 h-20 rounded-full overflow-hidden mb-sm border-2 border-primary-fixed">
+<img alt="Couple profile" class="w-full h-full object-cover" data-alt="A candid, warm portrait of a modern couple smiling gently at the camera, bathed in soft, natural morning light. The image embodies a sophisticated, editorial light-mode aesthetic with soft cream and subtle pink undertones, perfect for a high-end relationship app profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgxUC-IVvIRnWizw3WVQVxVut-cXtVDHb05ZBfSemL45FNcGyMGHxZbb5n3lD31PYwGU0jgogwSeRiTpgMpsqVDknkJGfFePcnUCmiZV0F6PPSQziM2Ab8vIydS891YNlpEjDrSVz5CLwdTWnmbLRshElGyoIk9ta_7REIaSo7dTczwT6DzkurIIf66F2WvopcOvnP-LCkhhiSmglvrPz1dCGm9U_lt9iZ13Lfh7rhMC50d-wZVpDQ8VkwYDZtgeNJ0aYeZsi_wuI"/>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary text-center">L'Amour Moderne</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1 text-center">Planning with Intention</p>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-4 text-on-tertiary-fixed-variant px-4 py-3 rounded-xl hover:bg-tertiary-fixed transition-colors active:translate-x-1 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 text-on-tertiary-fixed-variant px-4 py-3 rounded-xl hover:bg-tertiary-fixed transition-colors active:translate-x-1 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-label-md text-label-md">Our Date Ideas</span>
+</a>
+<a class="flex items-center gap-4 text-on-tertiary-fixed-variant px-4 py-3 rounded-xl hover:bg-tertiary-fixed transition-colors active:translate-x-1 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="shuffle">shuffle</span>
+<span class="font-label-md text-label-md">Date Randomizer</span>
+</a>
+<a class="flex items-center gap-4 bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 transition-colors active:translate-x-1 duration-150 mt-sm" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="font-label-md text-label-md">Programar Cita</span>
+</a>
+</nav>
+<!-- CTA -->
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-full hover:opacity-90 transition-opacity flex items-center justify-center gap-2 custom-shadow">
+<span class="material-symbols-outlined text-sm">add</span>
+            Schedule Date
+        </button>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full md:pl-64 pt-[72px] md:pt-0 min-h-screen bg-background">
+<div class="max-w-4xl mx-auto px-margin-mobile md:px-lg py-lg md:py-xl">
+<!-- Page Header -->
+<div class="mb-lg">
+<a class="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md mb-sm" href="#">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                    Volver a Ideas
+                </a>
+<h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">Programar nuestra cita</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">Selecciona el momento perfecto para conectar y crear recuerdos invaluables.</p>
+</div>
+<!-- Content Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Left Column: Idea Details & Form -->
+<div class="lg:col-span-7 flex flex-col gap-lg">
+<!-- Selected Idea Card -->
+<div class="bg-surface-container-lowest rounded-xl p-md custom-shadow border border-outline-variant/20 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 z-10">
+<span class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]">restaurant</span>
+                                Gastronomía
+                            </span>
+</div>
+<div class="flex flex-col sm:flex-row gap-md items-start sm:items-center relative z-10">
+<div class="w-full sm:w-32 h-32 rounded-lg overflow-hidden shrink-0 border border-outline-variant/30">
+<img alt="Cena íntima" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A beautifully arranged table at a high-end, dimly lit modern restaurant. Two glasses of red wine sit next to artisanal plates illuminated by a single warm candle. The overall aesthetic is soft, minimalist, and deeply romantic, featuring warm reds and soft cream tones in a light-mode editorial style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZiEA_F-egBB4sV6irubwR0jvPqLVyMQDfvDVeecCqcY5am6EkVspD5ji8SFp-1nlu0dhZKiJLDQES5AyWHNufSDc9aWrdOs2swrRx8fGRau4zhz5u21DRde12VkpsQiDFcg4u3NiU4mVZ8vs_758wVbxI4zOkClyDCr9_uenrQf5vcwGZ0CcE_krrDraNIX92YX2Pdy_rcENKIrphu6GTKFiSh3-h_roTZK6Ms74dFaIcDkALAoRbwy4lCp5YOCaV-vUINNGjj2k"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Cena de degustación íntima</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Una experiencia culinaria de 5 pasos en el nuevo bistró local, enfocada en la conversación sin distracciones.</p>
+<div class="flex gap-4 mt-3 text-on-tertiary-fixed-variant">
+<div class="flex items-center gap-1 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                                        2-3 horas
+                                    </div>
+<div class="flex items-center gap-1 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">payments</span>
+                                        $$$
+                                    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Time Selection Section -->
+<div class="bg-surface-container-lowest rounded-xl p-md md:p-lg custom-shadow border border-outline-variant/20">
+<h4 class="font-headline-md text-headline-md text-on-surface mb-md">Seleccionar Horario</h4>
+<div class="time-picker-grid">
+<!-- Time Slots -->
+<button class="py-3 px-4 rounded-lg border border-outline-variant/40 text-center font-label-md text-label-md text-on-surface-variant hover:border-primary hover:text-primary transition-all">
+                                19:00
+                            </button>
+<button class="py-3 px-4 rounded-lg border border-outline-variant/40 text-center font-label-md text-label-md text-on-surface-variant hover:border-primary hover:text-primary transition-all">
+                                19:30
+                            </button>
+<button class="py-3 px-4 rounded-lg bg-primary text-on-primary border border-primary text-center font-label-md text-label-md shadow-sm transform scale-[1.02] transition-all">
+                                20:00
+                            </button>
+<button class="py-3 px-4 rounded-lg border border-outline-variant/40 text-center font-label-md text-label-md text-on-surface-variant hover:border-primary hover:text-primary transition-all">
+                                20:30
+                            </button>
+<button class="py-3 px-4 rounded-lg border border-outline-variant/40 text-center font-label-md text-label-md text-on-surface-variant hover:border-primary hover:text-primary transition-all">
+                                21:00
+                            </button>
+<button class="py-3 px-4 rounded-lg border border-outline-variant/40 text-center font-label-md text-label-md text-on-surface-variant opacity-50 cursor-not-allowed">
+                                21:30
+                            </button>
+</div>
+</div>
+<!-- Notes Section -->
+<div class="bg-surface-container-lowest rounded-xl p-md md:p-lg custom-shadow border border-outline-variant/20">
+<label class="block font-headline-md text-headline-md text-on-surface mb-sm" for="date-notes">Notas para nuestra cita</label>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">¿Hay algo especial que debamos recordar? (Código de vestimenta, sorpresas, reservaciones).</p>
+<div class="relative">
+<textarea class="w-full bg-gradient-to-b from-surface to-surface-container-lowest border border-outline-variant rounded-lg p-4 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none" id="date-notes" placeholder="Ej. Reservación a nombre de Martín. Sorpresa al final de la noche..." rows="4"></textarea>
+<div class="absolute bottom-3 right-3 text-on-surface-variant/50">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Date Picker Sticky -->
+<div class="lg:col-span-5 relative">
+<div class="sticky top-xl bg-surface-container-lowest rounded-xl p-md md:p-lg custom-shadow border border-outline-variant/20">
+<div class="flex justify-between items-center mb-md">
+<h4 class="font-headline-md text-headline-md text-on-surface">Octubre 2023</h4>
+<div class="flex gap-2">
+<button class="p-1 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Calendar Header -->
+<div class="date-picker-grid mb-2">
+<div class="text-center font-label-sm text-label-sm text-on-surface-variant/70">D</div>
+<div class="text-center font-label-sm text-label-sm text-on-surface-variant/70">L</div>
+<div class="text-center font-label-sm text-label-sm text-on-surface-variant/70">M</div>
+<div class="text-center font-label-sm text-label-sm text-on-surface-variant/70">M</div>
+<div class="text-center font-label-sm text-label-sm text-on-surface-variant/70">J</div>
+<div class="text-center font-label-sm text-label-sm text-on-surface-variant/70">V</div>
+<div class="text-center font-label-sm text-label-sm text-on-surface-variant/70">S</div>
+</div>
+<!-- Calendar Days -->
+<div class="date-picker-grid gap-y-2">
+<!-- Empty slots -->
+<div></div><div></div>
+<!-- Days -->
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                1
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                2
+                                <span class="absolute bottom-1 w-1 h-1 bg-secondary rounded-full"></span>
+</button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                3
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                4
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                5
+                                <span class="absolute bottom-1 w-1 h-1 bg-secondary rounded-full"></span>
+</button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                6
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                7
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                8
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                9
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                10
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                11
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center bg-primary text-on-primary font-bold shadow-md transform scale-110 transition-all z-10 relative">
+                                12
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                13
+                            </button>
+<button class="w-10 h-10 rounded-full mx-auto flex items-center justify-center font-body-md text-body-md text-on-surface hover:bg-secondary-container hover:text-on-secondary-container transition-colors relative">
+                                14
+                                <span class="absolute bottom-1 w-1 h-1 bg-secondary rounded-full"></span>
+</button>
+<!-- Remaining days faded for brevity -->
+<div class="col-span-7 flex justify-center mt-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant/50">...</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="mt-md flex items-center gap-4 border-t border-outline-variant/30 pt-md">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Fechas sugeridas</span>
+</div>
+</div>
+<!-- Confirm Action -->
+<div class="mt-lg pt-md border-t border-outline-variant/30">
+<div class="flex justify-between items-center mb-md font-label-md text-label-md">
+<span class="text-on-surface-variant">Fecha seleccionada:</span>
+<span class="text-primary">Jue, 12 Oct • 20:00</span>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-4 rounded-full hover:bg-surface-tint transition-colors shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group">
+                                Confirmar Cita
+                                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

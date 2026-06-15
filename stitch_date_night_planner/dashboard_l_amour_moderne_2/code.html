@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>L'Amour Moderne - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "surface-bright": "#fbf8ff",
+                        "primary-container": "#db313f",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#494644",
+                        "on-primary-fixed": "#410007",
+                        "primary-fixed": "#ffdad8",
+                        "on-primary-fixed-variant": "#92001c",
+                        "outline": "#8f6f6e",
+                        "on-background": "#181a2e",
+                        "on-primary": "#ffffff",
+                        "background": "#fbf8ff",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-highest": "#e0e0fc",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d7d8f4",
+                        "secondary-container": "#fdd5e4",
+                        "inverse-on-surface": "#f1efff",
+                        "on-surface": "#181a2e",
+                        "on-tertiary-fixed": "#1d1b19",
+                        "tertiary-fixed": "#e7e1de",
+                        "primary": "#b7102a",
+                        "on-secondary-fixed": "#2b141f",
+                        "tertiary-container": "#777471",
+                        "secondary": "#745662",
+                        "surface-container-high": "#e6e6ff",
+                        "tertiary-fixed-dim": "#cbc5c2",
+                        "on-secondary-fixed-variant": "#5b3f4b",
+                        "inverse-primary": "#ffb3b1",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#fbf8ff",
+                        "on-tertiary-container": "#fffbff",
+                        "inverse-surface": "#2d2f44",
+                        "surface-tint": "#bb152c",
+                        "on-secondary-container": "#795a67",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e0e0fc",
+                        "surface-container": "#edecff",
+                        "on-surface-variant": "#5b403f",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#e3bccb",
+                        "outline-variant": "#e4bebc",
+                        "tertiary": "#5e5b59",
+                        "surface-container-low": "#f4f2ff",
+                        "secondary-fixed": "#ffd8e7",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "lg": "48px",
+                        "xl": "80px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "max-width": "1200px",
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "auto"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Literata"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Literata"],
+                        "display-lg": ["Literata"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen relative antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-background dark:bg-background flex justify-between items-center px-margin-mobile h-16 w-full pt-safe">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden flex items-center justify-center flex-shrink-0 border border-outline/10 shadow-sm hover:opacity-80 transition-opacity cursor-pointer">
+<img alt="User profile picture" class="w-full h-full object-cover" data-alt="A soft, high-key portrait of a smiling woman. The lighting is bright and ethereal, perfectly fitting a light-mode, minimalist interface. The background is a blurred, warm cream tone, maintaining a romantic and editorial feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwOMNLlluloj25q5UvDAir5sn0YniQ5nMNiz8Hio6l4TZ3GqmrCGl6EAzeiCCvjVg56DBL9sSe-EBIoPZ4wG_MA-UpdI-OjugqFBoOtTQWoeghczgKJ2uum06KYLtLOEXTKAeDbRldon6NEgS0FT7u7qBB4neIk5GcVuivJzjtuv_wAQMXLl9sl51QwMBXjs7iLLqz5jkxy8gI3W6zIuuF00ESiPHjzYeRofSSNRVtNx2fOeitEY_sbpiWRfkpzJkw07YkVhIB4z4"/>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">L'Amour Moderne</h1>
+<button class="w-10 h-10 flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity flex-shrink-0">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-[calc(64px+env(safe-area-inset-top))] pb-[calc(80px+env(safe-area-inset-bottom))] px-margin-mobile flex flex-col items-center">
+<div class="w-full max-w-max-width space-y-lg mt-md">
+<!-- Hero: Next Date -->
+<section class="space-y-sm">
+<h2 class="font-headline-md text-headline-md text-secondary ml-1">Próxima Cita</h2>
+<article class="bg-surface rounded-xl overflow-hidden relative shadow-[0_4px_24px_rgba(250,210,225,0.4)] border border-outline/5 transition-transform hover:scale-[1.01] duration-300 cursor-pointer group">
+<div class="h-64 w-full bg-surface-variant relative">
+<img class="w-full h-full object-cover absolute inset-0 transition-transform duration-700 group-hover:scale-105" data-alt="A beautiful, romantic dinner setting captured from above in a soft minimalist style. The table is dressed in high-quality cream linen. Two plates of exquisite modern European cuisine, beautifully plated, are visible. Two glasses of light red wine cast soft, warm shadows in the bright, high-key lighting. The overall mood is intimate, editorial, and anticipatory, utilizing a palette of creamy whites and subtle romantic reds." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaKHh5oJPUx5q2JwwSE65usAVYjN8NaKAk36AJl71UPxhnRWubYRBFxwBIK76-yjL0iwDbZJVZQhwTGtmJObs9byXb5iNcQCxfM0FxQOboM_7Cq82LNfpK3tTnrfBs7-40eL2L6jNM5Rt-VoqMyUj5rmzCssgCCE0_OA8tGYqv97UAY6SVBvcPg_ZO6UE5LWg_77XBErLE2BXfkKTh0JHyTh6A3_mVenTTYecWQ6r_U-iV8OZBqeVPf-z4oScuGpZgTWHDxzKJKtc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#181a2e]/80 via-[#181a2e]/20 to-transparent mix-blend-multiply opacity-80"></div>
+<div class="absolute bottom-5 left-5 right-5 flex justify-between items-end text-on-primary">
+<div class="flex flex-col gap-1">
+<span class="inline-flex w-max items-center px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm backdrop-blur-md bg-opacity-90 shadow-sm">
+                                    Cena Íntima
+                                </span>
+<h3 class="font-display-lg-mobile text-display-lg-mobile leading-none mt-1">Bistro de París</h3>
+</div>
+<div class="flex flex-col items-end text-right bg-surface/10 backdrop-blur-sm p-2 rounded-lg border border-on-primary/20">
+<span class="font-label-md text-label-md font-bold">14 Feb</span>
+<span class="font-label-sm text-label-sm opacity-90">20:00 h</span>
+</div>
+</div>
+</div>
+</article>
+</section>
+<!-- Stats Row -->
+<section class="grid grid-cols-2 gap-gutter">
+<div class="bg-surface rounded-xl p-md flex flex-col justify-center items-center text-center shadow-[0_2px_12px_rgba(250,210,225,0.3)] border border-outline/5 relative overflow-hidden">
+<div class="absolute -top-4 -right-4 w-16 h-16 bg-secondary-container rounded-full opacity-20 blur-xl"></div>
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary leading-none">3</span>
+<span class="font-label-sm text-label-sm text-secondary mt-2 uppercase tracking-wide">Citas este Mes</span>
+</div>
+<div class="bg-surface rounded-xl p-md flex flex-col justify-center items-center text-center shadow-[0_2px_12px_rgba(250,210,225,0.3)] border border-outline/5 relative overflow-hidden">
+<div class="absolute -bottom-4 -left-4 w-16 h-16 bg-primary-container rounded-full opacity-10 blur-xl"></div>
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary leading-none">24</span>
+<span class="font-label-sm text-label-sm text-secondary mt-2 uppercase tracking-wide">Total de Ideas</span>
+</div>
+</section>
+<!-- Recent Ideas List -->
+<section class="space-y-md">
+<div class="flex justify-between items-center px-1">
+<h2 class="font-headline-md text-headline-md text-secondary">Ideas Recientes</h2>
+<button class="bg-primary text-on-primary px-4 py-2.5 rounded-full font-label-md text-label-md flex items-center gap-1.5 hover:bg-surface-tint transition-all shadow-[0_4px_12px_rgba(219,49,63,0.3)] hover:shadow-[0_6px_16px_rgba(219,49,63,0.4)] hover:-translate-y-0.5 active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        Añadir Nueva
+                    </button>
+</div>
+<div class="flex flex-col gap-sm">
+<!-- Idea Item 1 -->
+<div class="flex items-center p-3 bg-surface rounded-xl shadow-[0_2px_8px_rgba(250,210,225,0.2)] border border-outline/5 gap-md hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-[72px] h-[72px] rounded-lg bg-surface-container overflow-hidden flex-shrink-0 shadow-inner">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A serene outdoor picnic scene in a bright, modern park setting. A high-quality woven basket sits next to a soft cream blanket spread on lush green grass. Subtle dappled sunlight filters through leaves, creating a soft, warm glow. The aesthetic is clean, romantic, and minimalist, with a focus on high-quality textures and an airy atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3ajNcvqDdO93epWOvG_jx68hNylSnq_AuN3tM2_KLOVTF12Vev7ncFarbt9df4u49zSek2zrQnVGnN2L0X9Ssm-ImJNK1_U5J7Y2BxJFo_cyMYMFc6ixZ1mtViFOHZXYIlxo3Wt3O2uMEqLShQiG89Pp3XYkzjFcCx3pK4Fe8CRg2PNUEXVQ6KBe37msx6H6pRNNoOhJ06N2BdEDt_oUQeFhIcsdbOhLXIdCuuJtVVj-T-Wjyh18eiOsqrVOIbwN6zADG5fj2H0Y"/>
+</div>
+<div class="flex-grow flex flex-col justify-center min-w-0">
+<h4 class="font-label-md text-label-md text-on-surface truncate">Picnic al Atardecer</h4>
+<span class="font-label-sm text-label-sm text-tertiary mt-0.5">Exterior • Relajado</span>
+</div>
+<button class="text-secondary/40 hover:text-primary transition-colors p-2 flex-shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<!-- Idea Item 2 -->
+<div class="flex items-center p-3 bg-surface rounded-xl shadow-[0_2px_8px_rgba(250,210,225,0.2)] border border-outline/5 gap-md hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-[72px] h-[72px] rounded-lg bg-surface-container overflow-hidden flex-shrink-0 shadow-inner">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A minimalist and elegant interior of an art gallery. Bright white walls display contemporary abstract art with very subtle touches of red. The space is vast, airy, and flooded with natural, high-key daylight. The mood is sophisticated, cultural, and peaceful, aligning with a soft minimalist editorial design style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSj_vjPH-ONJH9g7gg1ahoQuMjkf7oDzc3FU0XoyVZ7P9U7MblfWS4qMGQB6dRV6AUcbOa51aFkh8gVpjxQgMykgz1J0Vy0rqvLB6VYhTLWR21SoCxA_L0Os_8XdtWmVbsoY5RNoW0MILgb8yvr0nqyd5mr-ehUMmu34Bw08EvAwNHBXm6YJNSpFO39suPeH1s3SaXoSeo0nI7OmquykuOBOO1uygkv53oygKbQFMHBMZRr2h-vPpeVvlO2lGYwUQNmcZxINRkNJs"/>
+</div>
+<div class="flex-grow flex flex-col justify-center min-w-0">
+<h4 class="font-label-md text-label-md text-on-surface truncate">Visita a la Galería</h4>
+<span class="font-label-sm text-label-sm text-tertiary mt-0.5">Cultural • Interior</span>
+</div>
+<button class="text-secondary/40 hover:text-primary transition-colors p-2 flex-shrink-0">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<!-- Idea Item 3 -->
+<div class="flex items-center p-3 bg-surface rounded-xl shadow-[0_2px_8px_rgba(250,210,225,0.2)] border border-outline/5 gap-md hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="w-[72px] h-[72px] rounded-lg bg-surface-container overflow-hidden flex-shrink-0 shadow-inner flex items-center justify-center bg-secondary-container">
+<span class="material-symbols-outlined text-secondary text-3xl">wine_bar</span>
+</div>
+<div class="flex-grow flex flex-col justify-center min-w-0">
+<h4 class="font-label-md text-label-md text-on-surface truncate">Cata de Vinos</h4>
+<span class="font-label-sm text-label-sm text-tertiary mt-0.5">Elegante • Noche</span>
+</div>
+<button class="text-secondary/40 hover:text-primary transition-colors p-2 flex-shrink-0">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-margin-mobile py-2 pb-safe bg-surface-container-low dark:bg-surface-container-low shadow-[0_-4px_12px_rgba(250,210,225,0.4)] z-50 rounded-t-xl">
+<!-- Dashboard (Active State) -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container rounded-full px-5 py-1.5 hover:opacity-80 transition-all duration-200 scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm-mobile mt-1 font-bold">Dashboard</span>
+</a>
+<!-- Ideas (Inactive State) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1.5 hover:bg-secondary-container dark:hover:bg-secondary-container transition-colors rounded-full" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-sm-mobile mt-1">Ideas</span>
+</a>
+<!-- Randomizer (Inactive State) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-4 py-1.5 hover:bg-secondary-container dark:hover:bg-secondary-container transition-colors rounded-full" href="#">
+<span class="material-symbols-outlined">casino</span>
+<span class="font-label-sm text-label-sm-mobile mt-1">Randomizer</span>
+</a>
+</nav>
+</body></html>

@@ -1,26 +1,176 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Colors */
+  --color-primary-fixed-dim: #ffb3b1;
+  --color-surface-bright: #fbf8ff;
+  --color-primary-container: #db313f;
+  --color-error: #ba1a1a;
+  --color-on-tertiary-fixed-variant: #494644;
+  --color-on-primary-fixed: #410007;
+  --color-primary-fixed: #ffdad8;
+  --color-on-primary-fixed-variant: #92001c;
+  --color-outline: #8f6f6e;
+  --color-on-background: #181a2e;
+  --color-on-primary: #ffffff;
+  --color-background: #fbf8ff;
+  --color-on-primary-container: #fffbff;
+  --color-surface-container-highest: #e0e0fc;
+  --color-error-container: #ffdad6;
+  --color-surface-dim: #d7d8f4;
+  --color-secondary-container: #fdd5e4;
+  --color-inverse-on-surface: #f1efff;
+  --color-on-surface: #181a2e;
+  --color-on-tertiary-fixed: #1d1b19;
+  --color-tertiary-fixed: #e7e1de;
+  --color-primary: #b7102a;
+  --color-on-secondary-fixed: #2b141f;
+  --color-tertiary-container: #777471;
+  --color-secondary: #745662;
+  --color-surface-container-high: #e6e6ff;
+  --color-tertiary-fixed-dim: #cbc5c2;
+  --color-on-secondary-fixed-variant: #5b3f4b;
+  --color-inverse-primary: #ffb3b1;
+  --color-on-tertiary: #ffffff;
+  --color-surface: #fbf8ff;
+  --color-on-tertiary-container: #fffbff;
+  --color-inverse-surface: #2d2f44;
+  --color-surface-tint: #bb152c;
+  --color-on-secondary-container: #795a67;
+  --color-on-secondary: #ffffff;
+  --color-surface-variant: #e0e0fc;
+  --color-surface-container: #edecff;
+  --color-on-surface-variant: #5b403f;
+  --color-on-error: #ffffff;
+  --color-secondary-fixed-dim: #e3bccb;
+  --color-outline-variant: #e4bebc;
+  --color-tertiary: #5e5b59;
+  --color-surface-container-low: #f4f2ff;
+  --color-secondary-fixed: #ffd8e7;
+  --color-surface-container-lowest: #ffffff;
+
+  /* Spacing */
+  --spacing-base: 8px;
+  --spacing-xs: 4px;
+  --spacing-sm: 12px;
+  --spacing-md: 24px;
+  --spacing-lg: 48px;
+  --spacing-xl: 80px;
+  --spacing-gutter: 16px;
+  --spacing-margin-mobile: 20px;
+  --spacing-margin-desktop: auto;
+  --spacing-max-width: 1200px;
+
+  /* Border Radius */
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Font Families */
+  --font-jakarta: var(--font-jakarta);
+  --font-literata: var(--font-literata);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Typography mappings so we can use classes like font-headline-md and text-headline-md */
+.font-display-lg {
+  font-family: var(--font-literata);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.text-display-lg {
+  font-size: 48px;
+  line-height: 56px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.font-display-lg-mobile {
+  font-family: var(--font-literata);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.text-display-lg-mobile {
+  font-size: 36px;
+  line-height: 44px;
+}
+
+.font-headline-md {
+  font-family: var(--font-literata);
+  font-weight: 600;
+}
+.text-headline-md {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.font-body-lg {
+  font-family: var(--font-jakarta);
+  font-weight: 400;
+}
+.text-body-lg {
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.font-body-md {
+  font-family: var(--font-jakarta);
+  font-weight: 400;
+}
+.text-body-md {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.font-label-md {
+  font-family: var(--font-jakarta);
+  font-weight: 600;
+}
+.text-label-md {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.font-label-sm {
+  font-family: var(--font-jakarta);
+  font-weight: 500;
+}
+.text-label-sm {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* Custom design shadows and layout settings from DESIGN.md */
+.glass-card {
+  background: rgba(255, 249, 245, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(143, 111, 110, 0.15);
+  box-shadow: 0 4px 24px rgba(250, 210, 225, 0.4);
+}
+
+.soft-shadow {
+  box-shadow: 0 8px 32px rgba(250, 210, 225, 0.4);
+}
+
+.custom-card-shadow {
+  box-shadow: 0 4px 16px rgba(250, 210, 225, 0.4);
+}
+.custom-card-shadow:hover {
+  box-shadow: 0 8px 24px rgba(250, 210, 225, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Hide scrollbar utility */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-jakarta);
 }
