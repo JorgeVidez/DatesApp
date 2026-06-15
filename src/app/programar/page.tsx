@@ -1,23 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCitas } from '@/context/CitasContext';
 import { Cita } from '@/types/cita';
 
 const HOURS = ['19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
 
-export default function ProgramarPage() {
+function ProgramarContent() {
   const { citas, updateCita } = useCitas();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const routerCitaId = searchParams.get('id');
 
-  const [selectedCitaId, setSelectedCitaId] = useState<string>(
-    citas.length > 0 ? citas[0].id : ''
-  );
+  const [selectedCitaId, setSelectedCitaId] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<number>(12); // Oct 12 default
   const [selectedHour, setSelectedHour] = useState<string>('20:00');
   const [notes, setNotes] = useState('');
+
+  // Set initial Cita ID on mount or when parameters change
+  useEffect(() => {
+    if (routerCitaId && citas.some((c) => c.id === routerCitaId)) {
+      setSelectedCitaId(routerCitaId);
+    } else if (citas.length > 0) {
+      setSelectedCitaId(citas[0].id);
+    }
+  }, [routerCitaId, citas]);
 
   const activeCita = citas.find((c) => c.id === selectedCitaId);
 
@@ -299,5 +308,17 @@ export default function ProgramarPage() {
 
       </main>
     </div>
+  );
+}
+
+export default function ProgramarPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center py-20 text-primary">
+        <span className="material-symbols-outlined animate-spin text-4xl">favorite</span>
+      </div>
+    }>
+      <ProgramarContent />
+    </Suspense>
   );
 }

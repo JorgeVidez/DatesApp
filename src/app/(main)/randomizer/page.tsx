@@ -15,12 +15,12 @@ export default function RandomizerPage() {
     if (citas.length === 0) return;
     setShuffling(true);
     
-    // Simulate a shuffling delay of 1 second for visual suspense
+    // Simulate a shuffling delay of 1.2 seconds for visual suspense
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * citas.length);
       setSelectedCita(citas[randomIndex]);
       setShuffling(false);
-    }, 1000);
+    }, 1200);
   };
 
   const handleReset = () => {
@@ -28,149 +28,186 @@ export default function RandomizerPage() {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col items-center justify-center py-md">
+    <div className="w-full flex flex-col items-center justify-center py-md relative min-h-[calc(100vh-12rem)] lg:min-h-0">
       
-      {/* Header Text */}
-      <div className="text-center mb-lg">
-        <h1 className="font-display-lg-mobile text-display-lg-mobile text-on-surface mb-xs">
-          ¿Qué hacemos hoy?
-        </h1>
-        <p className="font-body-md text-body-md text-on-surface-variant">
-          Deja que el azar decida vuestra próxima aventura.
-        </p>
-      </div>
+      {/* Decorative Background Elements */}
+      <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20 dark:opacity-10 pointer-events-none" aria-hidden="true"></div>
+      <div className="absolute bottom-[-10%] left-[-5%] w-80 h-80 bg-primary-fixed-dim rounded-full mix-blend-multiply filter blur-3xl opacity-15 dark:opacity-5 pointer-events-none" aria-hidden="true"></div>
 
-      {/* Card Stack Area */}
-      <div className="relative w-full aspect-[3/4] max-w-[320px] mb-lg">
-        
-        {/* Background Card 2 */}
-        <div className="absolute inset-0 bg-surface-container-high rounded-[2rem] shadow-[0_8px_24px_rgba(250,210,225,0.2)] transform rotate-[-6deg] translate-y-4 scale-95 origin-bottom border border-secondary/10 z-10 transition-all duration-500">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary-fixed to-transparent" aria-hidden="true"></div>
-        </div>
-        
-        {/* Background Card 1 */}
-        <div className="absolute inset-0 bg-surface-container rounded-[2rem] shadow-[0_8px_24px_rgba(250,210,225,0.3)] transform rotate-[4deg] translate-y-2 scale-95 origin-bottom border border-secondary/10 z-20 transition-all duration-500">
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-secondary-container to-transparent" aria-hidden="true"></div>
-        </div>
+      {!selectedCita ? (
+        /* RANDOMIZER STATE (Cover deck) */
+        <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center z-10 animate-fade-in">
+          <h2 className="font-display-lg-mobile lg:font-display-lg text-on-surface mb-4">
+            ¿No saben qué hacer hoy?
+          </h2>
+          <p className="font-body-lg text-body-lg text-on-surface-variant mb-xl max-w-[480px]">
+            Deja que el destino decida. Toca el mazo o presiona el botón para descubrir tu próxima experiencia juntos.
+          </p>
 
-        {/* Foreground Card (Active) */}
-        <div className={`card-stack-1 absolute inset-0 bg-surface-container-lowest rounded-[2rem] shadow-[0_12px_32px_rgba(250,210,225,0.5)] border border-primary/5 flex flex-col p-md overflow-hidden z-30 transition-all duration-300 hover:shadow-[0_16px_40px_rgba(250,210,225,0.6)] group ${
-          shuffling ? 'animate-shake' : ''
-        }`}>
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-fixed/20 via-transparent to-secondary-fixed/20 pointer-events-none" aria-hidden="true"></div>
-
-          {shuffling ? (
-            /* Shuffling State */
-            <div className="flex flex-col items-center justify-center h-full w-full gap-md">
-              <span className="material-symbols-outlined text-[64px] text-primary animate-spin" aria-hidden="true">
-                casino
-              </span>
-              <p className="font-label-md text-label-md text-primary animate-pulse">
-                Mezclando cartas románticas...
-              </p>
-            </div>
-          ) : selectedCita ? (
-            /* Revealed Card State */
-            <div className="flex flex-col h-full w-full justify-between relative z-10 animate-fade-in">
-              <div className="flex flex-col gap-xs">
-                {/* Image */}
-                <div className="w-full h-32 rounded-xl overflow-hidden mb-sm shrink-0 border border-outline-variant/30">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={selectedCita.imagenUrl || 'https://images.unsplash.com/photo-1526218626217-dc65a29bb444?auto=format&fit=crop&q=80&w=200'}
-                    alt={selectedCita.titulo}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                
-                {/* Tags */}
-                <span className="bg-secondary-container text-on-secondary-container font-label-sm text-[10px] px-2.5 py-0.5 rounded-full w-max">
-                  {selectedCita.categoria}
-                </span>
-                
-                {/* Title */}
-                <h3 className="font-headline-md text-lg text-on-surface line-clamp-1 mt-1">
-                  {selectedCita.titulo}
-                </h3>
-
-                {/* Stars and Location */}
-                <div className="flex justify-between items-center text-xs text-on-surface-variant/80">
-                  <span className="flex items-center gap-0.5">
-                    <span className="material-symbols-outlined text-[14px]" aria-hidden="true">location_on</span>
-                    {selectedCita.lugar}
+          {/* Interactive Deck/Visual Stack */}
+          <button
+            type="button"
+            onClick={handleRollRandom}
+            disabled={shuffling || citas.length === 0}
+            className="relative w-64 h-80 mb-lg cursor-pointer group focus:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Barajar cartas de cita"
+          >
+            {/* Card Stack Illusion - Card 3 */}
+            <div className="absolute inset-0 bg-surface border border-outline-variant/30 rounded-xl transform rotate-6 translate-x-4 shadow-sm transition-transform group-hover:rotate-12 group-hover:translate-x-6 duration-300"></div>
+            
+            {/* Card Stack Illusion - Card 2 */}
+            <div className="absolute inset-0 bg-surface border border-outline-variant/30 rounded-xl transform -rotate-3 -translate-x-2 shadow-sm transition-transform group-hover:-rotate-6 group-hover:-translate-x-4 duration-300"></div>
+            
+            {/* Main Active Card */}
+            <div className={`absolute inset-0 bg-secondary-container rounded-xl card-shadow border border-white/20 flex flex-col items-center justify-center transition-transform group-hover:-translate-y-4 duration-300 z-10 overflow-hidden ${
+              shuffling ? 'animate-shake' : ''
+            }`}>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" aria-hidden="true"></div>
+              
+              {shuffling ? (
+                <div className="flex flex-col items-center justify-center gap-xs">
+                  <span className="material-symbols-outlined text-[64px] text-on-secondary-container animate-spin" aria-hidden="true">
+                    sync
                   </span>
-                  <StarRating rating={selectedCita.puntuacion} size="sm" />
+                  <span className="font-label-md text-label-md text-on-secondary-container/80 animate-pulse">
+                    Eligiendo...
+                  </span>
                 </div>
-
-                {/* Description */}
-                <p className="font-body-md text-body-md text-on-surface-variant text-xs line-clamp-3 leading-relaxed mt-sm">
-                  {selectedCita.descripcion}
-                </p>
-              </div>
-
-              {/* Action buttons inside card */}
-              <div className="flex gap-2 mt-md pt-sm border-t border-secondary-container/30">
-                <button
-                  onClick={handleReset}
-                  className="flex-1 py-2 rounded-full border border-outline font-label-sm text-xs text-on-surface-variant hover:bg-surface-container-low focus-ring-visible"
-                >
-                  Volver
-                </button>
-                <Link
-                  href="/programar"
-                  className="flex-1 py-2 rounded-full bg-secondary-container text-on-secondary-container font-bold font-label-sm text-xs text-center flex items-center justify-center gap-0.5 hover:opacity-90 shadow-sm focus-ring-visible"
-                >
-                  <span className="material-symbols-outlined text-sm" aria-hidden="true">calendar_month</span>
-                  Programar
-                </Link>
-              </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center">
+                  <span className="material-symbols-outlined text-[64px] text-on-secondary-container mb-4" aria-hidden="true">
+                    shuffle
+                  </span>
+                  <span className="font-headline-md text-headline-md text-on-secondary-container">
+                    Barajar
+                  </span>
+                </div>
+              )}
             </div>
-          ) : (
-            /* Cover Card State (Mystery) */
-            <div className="flex flex-col items-center justify-center h-full w-full text-center">
-              <div className="w-24 h-24 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mb-md shadow-sm group-hover:scale-110 transition-transform duration-300">
-                <span className="material-symbols-outlined text-[48px]" aria-hidden="true">casino</span>
-              </div>
-              <h2 className="font-headline-md text-headline-md text-on-surface mb-xs">
-                Cita Sorpresa
-              </h2>
-              <p className="font-body-md text-body-md text-on-surface-variant px-sm text-sm">
-                Presiona el botón para descubrir una idea única de nuestra colección y salir de la rutina.
-              </p>
-              <div className="absolute bottom-md text-secondary opacity-60 font-label-sm text-label-sm flex flex-col items-center">
-                <span className="material-symbols-outlined mb-1 animate-bounce" aria-hidden="true">casino</span>
-                Prueba tu suerte
-              </div>
-            </div>
+          </button>
+
+          {/* Action Button */}
+          <button
+            onClick={handleRollRandom}
+            disabled={shuffling || citas.length === 0}
+            className="px-8 py-4 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all shadow-[0_8px_24px_rgba(250,210,225,0.4)] tracking-wide disabled:opacity-50 disabled:cursor-not-allowed focus-ring-visible"
+          >
+            {shuffling ? 'SELECCIONANDO...' : 'DESCUBRIR CITA'}
+          </button>
+
+          {citas.length === 0 && (
+            <p className="font-body-md text-body-md text-error mt-sm text-center">
+              Debes agregar al menos una idea de cita para poder barajar.
+            </p>
           )}
         </div>
+      ) : (
+        /* RESULT STATE (Split Card layout) */
+        <div className="w-full max-w-3xl mx-auto z-10 animate-fade-in">
+          
+          {/* Header */}
+          <div className="text-center mb-8">
+            <span className="inline-block px-4 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm mb-4 tracking-widest uppercase shadow-sm">
+              ¡Cita Encontrada!
+            </span>
+            <h2 className="font-display-lg-mobile lg:font-display-lg text-on-surface">
+              {selectedCita.titulo}
+            </h2>
+          </div>
 
-      </div>
+          {/* Result Split Card Container */}
+          <div className="bg-surface rounded-xl overflow-hidden card-shadow border border-outline-variant/40 flex flex-col md:flex-row w-full">
+            
+            {/* Image Side */}
+            <div className="md:w-1/2 h-64 md:h-auto relative bg-surface-container-highest min-h-[240px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt={selectedCita.titulo}
+                className="w-full h-full object-cover"
+                src={selectedCita.imagenUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800'}
+              />
+              <div className="absolute top-4 left-4 flex gap-2">
+                <span className="px-3 py-1 bg-white/95 dark:bg-surface-container-lowest/95 backdrop-blur-sm text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/30 shadow-sm">
+                  {selectedCita.categoria}
+                </span>
+                <span className="px-3 py-1 bg-white/95 dark:bg-surface-container-lowest/95 backdrop-blur-sm text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/30 shadow-sm">
+                  <StarRating rating={selectedCita.puntuacion} size="sm" />
+                </span>
+              </div>
+            </div>
 
-      {/* Action Button */}
-      <button
-        onClick={handleRollRandom}
-        disabled={shuffling || citas.length === 0}
-        className="w-full max-w-[320px] py-4 px-8 bg-primary text-on-primary rounded-full font-label-md text-label-md shadow-[0_8px_16px_rgba(250,210,225,0.4)] hover:shadow-[0_12px_24px_rgba(250,210,225,0.6)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none focus-ring-visible"
-      >
-        <span className="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
-        {selectedCita ? 'Elegir Otra Cita' : 'Descubrir Cita'}
-      </button>
+            {/* Content Side */}
+            <div className="p-md md:p-lg md:w-1/2 flex flex-col justify-between bg-surface-bright border-t md:border-t-0 md:border-l border-outline-variant/20">
+              
+              <div className="flex flex-col gap-sm">
+                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                  {selectedCita.descripcion}
+                </p>
 
-      {citas.length === 0 && (
-        <p className="font-body-md text-body-md text-error mt-sm text-center">
-          Debes agregar al menos una idea de cita para jugar.
-        </p>
+                {selectedCita.notas && (
+                  <p className="font-body-md text-body-md italic text-primary/80 border-l-2 border-primary/30 pl-3 py-0.5 text-sm">
+                    &quot;{selectedCita.notas}&quot;
+                  </p>
+                )}
+
+                <div className="flex flex-col gap-3 my-4">
+                  <div className="flex items-center gap-3 text-on-surface-variant">
+                    <span className="material-symbols-outlined text-secondary" aria-hidden="true">schedule</span>
+                    <span className="font-label-md text-label-md">
+                      Duración: {selectedCita.duracion || '2-3 horas'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 text-on-surface-variant">
+                    <span className="material-symbols-outlined text-secondary" aria-hidden="true">payments</span>
+                    <span className="font-label-md text-label-md">
+                      Costo Estimado: {selectedCita.costo === '$' ? 'Económico' : selectedCita.costo === '$$' ? 'Medio' : 'Elevado'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 text-on-surface-variant">
+                    <span className="material-symbols-outlined text-secondary" aria-hidden="true">location_on</span>
+                    <span className="font-label-md text-label-md">
+                      Lugar: {selectedCita.lugar}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 mt-lg pt-sm border-t border-outline-variant/20">
+                <Link
+                  href={`/programar?id=${selectedCita.id}`}
+                  className="flex-grow py-3 px-6 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:opacity-90 transition-all text-center focus-ring-visible shadow-md shadow-primary/20"
+                >
+                  Programar esta Cita
+                </Link>
+                
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="py-3 px-6 bg-transparent border border-outline text-on-surface rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2 focus-ring-visible"
+                >
+                  <span className="material-symbols-outlined text-[18px]" aria-hidden="true">refresh</span>
+                  Otra Opción
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
       )}
 
-      {/* Adjust preferences stub button */}
-      <button
-        onClick={() => alert('¡Pronto podrás configurar filtros como categoría, presupuesto y clima!')}
-        className="mt-md py-2 px-4 bg-surface-container-highest text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/20 hover:bg-surface-variant transition-colors flex items-center gap-1 shrink-0 focus-ring-visible"
-      >
-        <span className="material-symbols-outlined text-[16px]" aria-hidden="true">tune</span>
-        Ajustar Preferencias
-      </button>
+      {/* Adjust preferences stub button under the stack */}
+      {!selectedCita && (
+        <button
+          onClick={() => alert('¡Pronto podrás configurar filtros como categoría, presupuesto y clima!')}
+          className="mt-md py-2 px-4 bg-surface-container-highest text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/20 hover:bg-surface-variant transition-colors flex items-center gap-1 shrink-0 z-10 focus-ring-visible"
+        >
+          <span className="material-symbols-outlined text-[16px]" aria-hidden="true">tune</span>
+          Ajustar Preferencias
+        </button>
+      )}
 
     </div>
   );

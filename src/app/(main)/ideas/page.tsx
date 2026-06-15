@@ -138,7 +138,7 @@ function IdeasContent() {
                 <h4 className="font-label-md text-label-md text-on-surface mb-1">
                   No hay citas en esta categoría
                 </h4>
-                <p className="font-body-md text-body-md text-on-surface-variant max-w-sm">
+                <p className="font-body-md text-body-md text-on-surface-variant max-w-[320px]">
                   Crea una nueva idea en esta categoría o explora otras secciones.
                 </p>
               </div>
