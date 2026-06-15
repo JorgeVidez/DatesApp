@@ -57,7 +57,6 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
   const [notas, setNotas] = useState('');
   const [isCustomImage, setIsCustomImage] = useState(false);
 
-  // Load initial data if editing
   useEffect(() => {
     if (initialData) {
       setTitulo(initialData.titulo);
@@ -72,7 +71,6 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
       setHora(initialData.hora || '');
       setNotas(initialData.notas || '');
 
-      // Check if current image is in presets
       const isPreset = IMAGE_PRESETS.some((preset) => preset.url === initialData.imagenUrl);
       setIsCustomImage(!isPreset && !!initialData.imagenUrl);
     }
@@ -104,7 +102,6 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
       notas: notas || undefined,
     });
 
-    // Reset form fields if not editing
     if (!initialData) {
       setTitulo('');
       setLugar('');
@@ -122,7 +119,7 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
   };
 
   const inputClass =
-    'w-full bg-gradient-to-b from-surface to-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface placeholder:text-outline-variant/70 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm';
+    'w-full bg-gradient-to-b from-surface to-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 py-3 font-body-md text-body-md text-on-surface placeholder:text-outline-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-sm';
 
   const labelClass = 'block font-label-md text-label-md text-on-surface mb-2';
 
@@ -135,7 +132,7 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
         <h3 className="font-headline-md text-headline-md text-primary">
           {initialData ? 'Editar Cita Romántica' : 'Registrar Nueva Cita'}
         </h3>
-        <span className="material-symbols-outlined text-primary text-2xl">favorite</span>
+        <span className="material-symbols-outlined text-primary text-2xl" aria-hidden="true">favorite</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
@@ -224,9 +221,9 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
                 key={option}
                 type="button"
                 onClick={() => setCosto(option)}
-                className={`py-2 rounded-lg font-label-md text-label-md transition-all ${
+                className={`py-2 rounded-lg font-label-md text-label-md transition-all focus-ring-visible ${
                   costo === option
-                    ? 'bg-primary text-on-primary shadow-sm'
+                    ? 'bg-primary text-on-primary shadow-sm font-bold'
                     : 'text-on-surface-variant hover:bg-secondary-container/30'
                 }`}
               >
@@ -273,7 +270,7 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
             <button
               type="button"
               onClick={() => setIsCustomImage(false)}
-              className={`px-4 py-2 rounded-full font-label-sm text-label-sm transition-all ${
+              className={`px-4 py-2 rounded-full font-label-sm text-label-sm transition-all focus-ring-visible ${
                 !isCustomImage
                   ? 'bg-secondary-container text-on-secondary-container font-bold shadow-sm'
                   : 'bg-surface-container text-on-surface-variant hover:bg-surface-variant'
@@ -284,7 +281,7 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
             <button
               type="button"
               onClick={() => setIsCustomImage(true)}
-              className={`px-4 py-2 rounded-full font-label-sm text-label-sm transition-all ${
+              className={`px-4 py-2 rounded-full font-label-sm text-label-sm transition-all focus-ring-visible ${
                 isCustomImage
                   ? 'bg-secondary-container text-on-secondary-container font-bold shadow-sm'
                   : 'bg-surface-container text-on-surface-variant hover:bg-surface-variant'
@@ -303,7 +300,7 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
                     key={preset.name}
                     type="button"
                     onClick={() => handlePresetSelect(preset.url)}
-                    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all focus-ring-visible ${
                       isSelected
                         ? 'border-primary ring-2 ring-primary-container scale-95'
                         : 'border-transparent hover:border-outline-variant opacity-80 hover:opacity-100'
@@ -349,7 +346,7 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
               className={`${inputClass} resize-none pr-10`}
             />
             <div className="absolute bottom-3 right-3 text-outline-variant/60 group-focus-within:text-primary transition-colors">
-              <span className="material-symbols-outlined text-[20px]">edit_note</span>
+              <span className="material-symbols-outlined text-[20px]" aria-hidden="true">edit_note</span>
             </div>
           </div>
         </div>
@@ -361,17 +358,17 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
           <button
             type="button"
             onClick={onCancel}
-            className="px-6 py-3 rounded-full border border-outline font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-[0.98]"
+            className="px-6 py-3 rounded-full border border-outline font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-[0.98] focus-ring-visible"
           >
             Cancelar
           </button>
         )}
         <button
           type="submit"
-          className="bg-primary text-on-primary rounded-full py-3 px-8 font-label-md text-label-md flex items-center justify-center gap-xs shadow-[0_4px_12px_rgba(183,16,42,0.3)] hover:shadow-[0_6px_16px_rgba(183,16,42,0.4)] hover:bg-surface-tint active:scale-[0.98] transition-all duration-200"
+          className="bg-primary text-on-primary rounded-full py-3 px-8 font-label-md text-label-md flex items-center justify-center gap-xs shadow-[0_4px_12px_rgba(183,16,42,0.3)] hover:shadow-[0_6px_16px_rgba(183,16,42,0.4)] hover:bg-surface-tint active:scale-[0.98] transition-all duration-200 focus-ring-visible"
         >
           {initialData ? 'Guardar Cambios' : 'Agregar Cita'}
-          <span className="material-symbols-outlined text-sm">favorite</span>
+          <span className="material-symbols-outlined text-sm" aria-hidden="true">favorite</span>
         </button>
       </div>
     </form>

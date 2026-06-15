@@ -11,12 +11,11 @@ interface CitaCardProps {
 }
 
 export default function CitaCard({ cita, onEdit, onDelete }: CitaCardProps) {
-  // Fallback image in case none is provided
   const fallbackImage = 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800';
   const imgUrl = cita.imagenUrl || fallbackImage;
 
   return (
-    <article className="bg-surface rounded-xl overflow-hidden border border-outline-variant/20 custom-card-shadow transition-all duration-300 relative group cursor-pointer flex flex-col h-full">
+    <article className="bg-surface rounded-xl overflow-hidden border border-outline-variant/20 custom-card-shadow transition-all duration-300 relative group cursor-pointer flex flex-col h-full focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
       {/* Edit/Delete floating action overlay */}
       <div className="absolute top-3 right-3 z-10 flex gap-2">
         {onEdit && (
@@ -25,10 +24,10 @@ export default function CitaCard({ cita, onEdit, onDelete }: CitaCardProps) {
               e.stopPropagation();
               onEdit(cita);
             }}
-            aria-label="Editar cita"
-            className="bg-surface-container-lowest/90 backdrop-blur-sm rounded-full p-2 text-on-surface-variant hover:text-primary hover:bg-surface transition-colors shadow-sm flex items-center justify-center active:scale-90"
+            aria-label={`Editar cita: ${cita.titulo}`}
+            className="bg-surface-container-lowest/90 backdrop-blur-sm rounded-full p-2 text-on-surface-variant hover:text-primary hover:bg-surface transition-colors shadow-sm flex items-center justify-center active:scale-90 focus-ring-visible"
           >
-            <span className="material-symbols-outlined text-[18px]">edit</span>
+            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">edit</span>
           </button>
         )}
         {onDelete && (
@@ -39,10 +38,10 @@ export default function CitaCard({ cita, onEdit, onDelete }: CitaCardProps) {
                 onDelete(cita.id);
               }
             }}
-            aria-label="Eliminar cita"
-            className="bg-surface-container-lowest/90 backdrop-blur-sm rounded-full p-2 text-on-surface-variant hover:text-error hover:bg-surface transition-colors shadow-sm flex items-center justify-center active:scale-90"
+            aria-label={`Eliminar cita: ${cita.titulo}`}
+            className="bg-surface-container-lowest/90 backdrop-blur-sm rounded-full p-2 text-on-surface-variant hover:text-error hover:bg-surface transition-colors shadow-sm flex items-center justify-center active:scale-90 focus-ring-visible"
           >
-            <span className="material-symbols-outlined text-[18px]">delete</span>
+            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">delete</span>
           </button>
         )}
       </div>
@@ -73,7 +72,7 @@ export default function CitaCard({ cita, onEdit, onDelete }: CitaCardProps) {
 
           <div className="flex items-center justify-between text-xs text-on-surface-variant/80">
             <div className="flex items-center gap-0.5">
-              <span className="material-symbols-outlined text-[14px]">location_on</span>
+              <span className="material-symbols-outlined text-[14px]" aria-hidden="true">location_on</span>
               <span className="truncate max-w-[120px]">{cita.lugar}</span>
             </div>
             <StarRating rating={cita.puntuacion} size="sm" />
@@ -106,7 +105,7 @@ export default function CitaCard({ cita, onEdit, onDelete }: CitaCardProps) {
           </div>
           {cita.fecha && (
             <span className="font-label-sm text-label-sm text-primary flex items-center gap-0.5">
-              <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+              <span className="material-symbols-outlined text-[14px]" aria-hidden="true">calendar_today</span>
               {cita.fecha}
             </span>
           )}

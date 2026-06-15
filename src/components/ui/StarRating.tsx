@@ -38,7 +38,7 @@ export default function StarRating({
   const stars = Array.from({ length: maxStars }, (_, i) => i + 1);
 
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex items-center gap-2">
       {stars.map((star) => {
         const isFilled = hoverRating !== null ? star <= hoverRating : star <= rating;
         return (
@@ -49,14 +49,18 @@ export default function StarRating({
             onMouseEnter={() => onChange && setHoverRating(star)}
             onMouseLeave={() => onChange && setHoverRating(null)}
             className={`${
-              onChange ? 'cursor-pointer focus:outline-none transition-transform hover:scale-110 active:scale-95' : 'cursor-default'
-            } text-primary-container`}
+              onChange 
+                ? 'cursor-pointer focus-ring-visible p-2 -m-2 rounded-full transition-transform hover:scale-110 active:scale-90' 
+                : 'cursor-default'
+            } text-primary-container inline-flex items-center justify-center`}
             disabled={!onChange}
-            aria-label={`Calificar con ${star} de ${maxStars} estrellas`}
+            aria-label={onChange ? `Calificar con ${star} de ${maxStars} estrellas` : undefined}
           >
             <span
-              className={`material-symbols-outlined ${getStarSizeClass()}`}
+              className="material-symbols-outlined"
+              aria-hidden="true"
               style={{
+                fontSize: size === 'sm' ? '16px' : size === 'lg' ? '28px' : '20px',
                 fontVariationSettings: isFilled ? "'FILL' 1, 'wght' 400" : "'FILL' 0, 'wght' 400",
               }}
             >
