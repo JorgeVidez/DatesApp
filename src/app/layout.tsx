@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Literata, Plus_Jakarta_Sans } from "next/font/google";
+import { CitasProvider } from "@/context/CitasContext";
 import "./globals.css";
 
 const literata = Literata({
@@ -36,7 +37,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-on-background font-jakarta">
-        {children}
+        <CitasProvider>
+          {children}
+        </CitasProvider>
       </body>
     </html>
   );
