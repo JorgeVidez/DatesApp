@@ -11,4 +11,6 @@ export interface Cita {
   costo: 'Económico' | 'Medio' | 'Elevado' | '$' | '$$' | '$$$';
   duracion?: string;  // e.g. "Aprox. 2 horas"
   imagenUrl?: string; // image illustration
+  fotoUrl?: string;   // photo memory (uploaded via Supabase)
+  fotos?: string[];   // gallery of memories (multiple photos)
 }

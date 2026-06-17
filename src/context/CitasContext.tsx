@@ -1,18 +1,26 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Cita } from '@/types/cita';
+import * as citaService from '@/services/citaService';
 
-interface CitasContextType {
+export interface CitasContextType {
   citas: Cita[];
-  addCita: (cita: Omit<Cita, 'id'>) => void;
-  updateCita: (cita: Cita) => void;
-  deleteCita: (id: string) => void;
+  loading: boolean;
+  error: string | null;
+  citaSeleccionada: Cita | null;
+  setCitaSeleccionada: (cita: Cita | null) => void;
+  addCita: (cita: Omit<Cita, 'id'>) => Promise<void>;
+  updateCita: (cita: Cita) => Promise<void>;
+  deleteCita: (id: string) => Promise<void>;
+  subirFotoACita: (citaId: string, file: File) => Promise<void>;
+  refrescarCitas: () => Promise<void>;
 }
 
-const CitasContext = createContext<CitasContextType | undefined>(undefined);
+// Exportamos el contexto para que pueda ser importado por el hook personalizado
+export const CitasContext = createContext<CitasContextType | undefined>(undefined);
 
-// Initial Mock Data
+// Datos iniciales de mockup por si Supabase no está configurado o falla
 const INITIAL_CITAS: Cita[] = [
   {
     id: '1',
@@ -56,28 +64,197 @@ const INITIAL_CITAS: Cita[] = [
 ];
 
 export function CitasProvider({ children }: { children: ReactNode }) {
-  const [citas, setCitas] = useState<Cita[]>(INITIAL_CITAS);
+  const [citas, setCitas] = useState<Cita[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [citaSeleccionada, setCitaSeleccionada] = useState<Cita | null>(null);
+  const [usingMockData, setUsingMockData] = useState<boolean>(false);
 
-  const addCita = (formData: Omit<Cita, 'id'>) => {
-    const newCita: Cita = {
-      ...formData,
-      id: Date.now().toString(),
-    };
-    setCitas((prev) => [newCita, ...prev]);
+  // Cargar citas al montar el componente
+  useEffect(() => {
+    refrescarCitas();
+  }, []);
+
+  const refrescarCitas = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Verificamos si las variables de entorno de Supabase están configuradas
+      const isConfigured = 
+        process.env.NEXT_PUBLIC_SUPABASE_URL && 
+        process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://your-project-id.supabase.co';
+
+      if (!isConfigured) {
+        throw new Error('Supabase no está configurado. Usando base de datos simulada local.');
+      }
+
+      const data = await citaService.getCitas();
+      setCitas(data);
+      setUsingMockData(false);
+    } catch (err: any) {
+      console.warn('Conexión a Supabase fallida. Usando datos mock locales:', err.message);
+      setCitas(INITIAL_CITAS);
+      setError(err.message || 'Error de conexión');
+      setUsingMockData(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateCita = (updatedData: Cita) => {
-    setCitas((prev) =>
-      prev.map((c) => (c.id === updatedData.id ? updatedData : c))
-    );
+  const addCita = async (formData: Omit<Cita, 'id'>) => {
+    setLoading(true);
+    try {
+      if (usingMockData) {
+        // Simular inserción local
+        const newCita: Cita = {
+          ...formData,
+          id: Date.now().toString(),
+        };
+        setCitas((prev) => [newCita, ...prev]);
+      } else {
+        const newCita = await citaService.addCita(formData);
+        setCitas((prev) => [newCita, ...prev]);
+      }
+    } catch (err: any) {
+      console.error('Error al agregar cita:', err);
+      // Fallback local en caso de error de red
+      const newCita: Cita = {
+        ...formData,
+        id: Date.now().toString(),
+      };
+      setCitas((prev) => [newCita, ...prev]);
+      alert('Error en el servidor. La cita se guardó localmente de forma temporal.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteCita = (id: string) => {
-    setCitas((prev) => prev.filter((c) => c.id !== id));
+  const updateCita = async (updatedData: Cita) => {
+    setLoading(true);
+    try {
+      if (usingMockData) {
+        setCitas((prev) =>
+          prev.map((c) => (c.id === updatedData.id ? updatedData : c))
+        );
+      } else {
+        const updated = await citaService.updateCitaService(updatedData);
+        setCitas((prev) =>
+          prev.map((c) => (c.id === updated.id ? updated : c))
+        );
+      }
+      
+      // Actualizar la cita seleccionada si corresponde
+      if (citaSeleccionada?.id === updatedData.id) {
+        setCitaSeleccionada(updatedData);
+      }
+    } catch (err: any) {
+      console.error('Error al actualizar cita:', err);
+      // Fallback local
+      setCitas((prev) =>
+        prev.map((c) => (c.id === updatedData.id ? updatedData : c))
+      );
+      if (citaSeleccionada?.id === updatedData.id) {
+        setCitaSeleccionada(updatedData);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteCita = async (id: string) => {
+    setLoading(true);
+    try {
+      if (!usingMockData) {
+        await citaService.deleteCitaService(id);
+      }
+      setCitas((prev) => prev.filter((c) => c.id !== id));
+      if (citaSeleccionada?.id === id) {
+        setCitaSeleccionada(null);
+      }
+    } catch (err: any) {
+      console.error('Error al eliminar cita:', err);
+      // Fallback local
+      setCitas((prev) => prev.filter((c) => c.id !== id));
+      if (citaSeleccionada?.id === id) {
+        setCitaSeleccionada(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const subirFotoACita = async (citaId: string, file: File) => {
+    try {
+      if (usingMockData) {
+        // En modo mockup local, creamos un object URL temporal
+        const fakeUrl = URL.createObjectURL(file);
+        // Esperamos 1s para simular la carga
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        
+        setCitas((prev) =>
+          prev.map((c) => {
+            if (c.id === citaId) {
+              const existing = c.fotos || [];
+              const updatedFotos = [...existing, fakeUrl];
+              return { ...c, fotoUrl: fakeUrl, fotos: updatedFotos };
+            }
+            return c;
+          })
+        );
+
+        if (citaSeleccionada?.id === citaId) {
+          setCitaSeleccionada((prev) => {
+            if (!prev) return null;
+            const existing = prev.fotos || [];
+            const updatedFotos = [...existing, fakeUrl];
+            return { ...prev, fotoUrl: fakeUrl, fotos: updatedFotos };
+          });
+        }
+      } else {
+        const publicUrl = await citaService.uploadCitaFoto(citaId, file);
+        
+        setCitas((prev) =>
+          prev.map((c) => {
+            if (c.id === citaId) {
+              const existing = c.fotos || [];
+              const updatedFotos = [...existing, publicUrl];
+              return { ...c, fotoUrl: publicUrl, fotos: updatedFotos };
+            }
+            return c;
+          })
+        );
+
+        if (citaSeleccionada?.id === citaId) {
+          setCitaSeleccionada((prev) => {
+            if (!prev) return null;
+            const existing = prev.fotos || [];
+            const updatedFotos = [...existing, publicUrl];
+            return { ...prev, fotoUrl: publicUrl, fotos: updatedFotos };
+          });
+        }
+      }
+    } catch (err: any) {
+      console.error('Error al subir la foto de la cita:', err);
+      alert('Hubo un problema al subir la foto: ' + err.message);
+      throw err;
+    }
   };
 
   return (
-    <CitasContext.Provider value={{ citas, addCita, updateCita, deleteCita }}>
+    <CitasContext.Provider
+      value={{
+        citas,
+        loading,
+        error,
+        citaSeleccionada,
+        setCitaSeleccionada,
+        addCita,
+        updateCita,
+        deleteCita,
+        subirFotoACita,
+        refrescarCitas,
+      }}
+    >
       {children}
     </CitasContext.Provider>
   );

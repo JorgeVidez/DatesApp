@@ -19,6 +19,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       icon: 'favorite',
     },
     {
+      href: '/momentos',
+      label: 'Momentos Inolvidables',
+      icon: 'photo_library',
+    },
+    {
       href: '/randomizer',
       label: 'Selector al Azar',
       icon: 'casino',

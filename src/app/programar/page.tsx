@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCitas } from '@/context/CitasContext';
+import { useCitas } from '@/hooks/useCitas';
 import { Cita } from '@/types/cita';
 
 const HOURS = ['19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];

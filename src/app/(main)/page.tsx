@@ -2,201 +2,261 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useCitas } from '@/context/CitasContext';
+import { useCitas } from '@/hooks/useCitas';
+import { Cita } from '@/types/cita';
+import CitaCard from '@/components/features/CitaCard';
+import CitaForm from '@/components/features/CitaForm';
+import CitaDetalle from '@/components/features/CitaDetalle';
+
+/**
+ * Heurística inteligente para determinar si una cita ya ha transcurrido.
+ * Una cita es pasada si tiene foto de recuerdo (fotoUrl) o si su fecha
+ * agendada es anterior al momento actual.
+ */
+function isCitaPasada(cita: Cita): boolean {
+  if (cita.fotoUrl) return true;
+  if (!cita.fecha) return false;
+
+  try {
+    const parsedDate = Date.parse(cita.fecha);
+    if (!isNaN(parsedDate)) {
+      return new Date(parsedDate) < new Date();
+    }
+
+    const lower = cita.fecha.toLowerCase();
+    const monthsMap: { [key: string]: number } = {
+      ene: 0, feb: 1, mar: 2, abr: 3, may: 4, jun: 5, jul: 6, ago: 7, sep: 8, oct: 9, nov: 10, dic: 11,
+      jan: 0, apr: 3, aug: 7, dec: 11
+    };
+
+    let monthIndex = -1;
+    let day = 1;
+
+    for (const [key, val] of Object.entries(monthsMap)) {
+      if (lower.includes(key)) {
+        monthIndex = val;
+        const match = lower.match(/\d+/);
+        if (match) day = parseInt(match[0], 10);
+        break;
+      }
+    }
+
+    if (monthIndex !== -1) {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const citaDate = new Date(currentYear, monthIndex, day);
+      return citaDate < now;
+    }
+  } catch (error) {
+    console.error('Error al parsear la fecha de la cita:', error);
+  }
+
+  return false;
+}
 
 export default function Dashboard() {
-  const { citas } = useCitas();
+  const {
+    citas,
+    loading,
+    error,
+    addCita,
+    citaSeleccionada,
+    setCitaSeleccionada,
+    subirFotoACita,
+  } = useCitas();
 
-  const nextCita = citas.find(c => c.fecha) || citas[0];
-  const recentIdeas = citas.slice(0, 3);
-  const totalIdeas = citas.length;
-  const citasEsteMes = citas.filter(c => c.fecha).length || 4;
+  // Filtrar citas que tienen fecha para clasificar entre programadas y pasadas
+  const citasAgendadas = citas.filter((c) => c.fecha);
+
+  const proximasCitas = citasAgendadas.filter((c) => !isCitaPasada(c));
+  const momentosInolvidables = citasAgendadas.filter((c) => isCitaPasada(c));
+
+  // Tomamos los 3 momentos más recientes para el teaser del dashboard
+  const recuerdosRecientes = momentosInolvidables.slice(0, 3);
+
+  // Las ideas de citas (sin fecha agendada)
+  const ideasSinAgendar = citas.filter((c) => !c.fecha);
+
+  const handleCitaSubmit = async (formData: Omit<Cita, 'id'>) => {
+    try {
+      await addCita(formData);
+    } catch (err) {
+      console.error('Error al crear la cita:', err);
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-lg">
-      
+    <div className="flex flex-col gap-lg pb-12">
       {/* Page Header */}
       <header className="mb-md">
         <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">
-          Bienvenido, Mi Amor.
+          Nuestro Espacio de Citas
         </h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant mt-sm">
-          Aquí está tu resumen romántico para hoy.
+          Planifica momentos únicos y conserva fotos de nuestros recuerdos más felices.
         </p>
       </header>
 
-      {/* Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg">
-        
-        {/* Left Column: Next Date & Stats (col-span-7) */}
-        <div className="lg:col-span-7 flex flex-col gap-lg">
-          
-          {/* Next Date Héroe Card */}
-          {nextCita ? (
-            <section className="glass-card rounded-xl overflow-hidden relative group shadow-[0_8px_32px_rgba(250,210,225,0.4)]">
-              <div className="h-64 relative overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  alt="Próxima cita"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  src={nextCita.imagenUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800'}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent"></div>
-                
-                <div className="absolute bottom-md left-md right-md flex justify-between items-end">
-                  <div>
-                    <span className="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-3 py-1 rounded-full mb-2 inline-block shadow-sm">
-                      Próxima Cita
-                    </span>
-                    <h3 className="font-headline-md text-headline-md text-on-surface">
-                      {nextCita.titulo}
-                    </h3>
-                    <p className="font-body-md text-body-md text-on-surface-variant flex items-center gap-2 mt-1">
-                      <span className="material-symbols-outlined text-[16px]" aria-hidden="true">location_on</span>
-                      {nextCita.lugar}
+      {/* Database connection warning state */}
+      {error && error.includes('Supabase no está configurado') && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex items-start gap-3 text-amber-700 dark:text-amber-400 text-sm">
+          <span className="material-symbols-outlined shrink-0" aria-hidden="true">warning</span>
+          <div>
+            <span className="font-bold">Modo Demo Local:</span> Supabase no está conectado. Las citas agregadas y fotos cargadas se guardarán en memoria temporalmente para que puedas probar la aplicación.
+          </div>
+        </div>
+      )}
+
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-lg items-start">
+        {/* Left Column: Form (col-span-5) */}
+        <div className="xl:col-span-5 flex flex-col gap-md">
+          <div className="sticky top-4">
+            <CitaForm onSubmit={handleCitaSubmit} />
+          </div>
+        </div>
+
+        {/* Right Column: Split Lists (col-span-7) */}
+        <div className="xl:col-span-7 flex flex-col gap-xl">
+          {loading ? (
+            /* Skeleton Loading State */
+            <div className="space-y-6">
+              <div className="h-8 w-48 bg-surface-variant animate-pulse rounded-full"></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
+                <div className="h-64 bg-surface-variant animate-pulse rounded-2xl"></div>
+                <div className="h-64 bg-surface-variant animate-pulse rounded-2xl"></div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Sección 1: Nuestras Próximas Citas */}
+              <section className="space-y-md">
+                <div className="flex items-center gap-2 border-b border-outline-variant/15 pb-2">
+                  <span className="material-symbols-outlined text-primary text-[22px]">calendar_today</span>
+                  <h3 className="font-headline-md text-xl text-on-surface">
+                    Nuestras Próximas Citas ({proximasCitas.length})
+                  </h3>
+                </div>
+
+                {proximasCitas.length === 0 ? (
+                  <div className="bg-surface rounded-2xl p-lg border border-dashed border-outline-variant/40 text-center py-12 flex flex-col items-center justify-center gap-2">
+                    <span className="material-symbols-outlined text-3xl text-outline-variant/80">favorite_border</span>
+                    <h4 className="font-label-md text-on-surface text-sm">No hay citas programadas</h4>
+                    <p className="font-body-md text-on-surface-variant text-xs max-w-[280px]">
+                      Usa el formulario de al lado para registrar y agendar nuestra siguiente aventura romántica.
                     </p>
                   </div>
-                  
-                  {/* Countdown Box */}
-                  <div className="bg-surface text-primary rounded-lg p-3 text-center shadow-md border border-outline-variant/30 shrink-0">
-                    <div className="font-display-lg-mobile text-display-lg-mobile leading-none">03</div>
-                    <div className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
-                      Días
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
+                    {proximasCitas.map((cita) => (
+                      <CitaCard
+                        key={cita.id}
+                        cita={cita}
+                        onSelect={setCitaSeleccionada}
+                      />
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Sección 2: Teaser de Recuerdos Recientes */}
+              <section className="space-y-md">
+                <div className="flex justify-between items-center border-b border-outline-variant/15 pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary text-[22px]">auto_awesome</span>
+                    <h3 className="font-headline-md text-xl text-on-surface">
+                      Recuerdos Recientes
+                    </h3>
+                  </div>
+                  {momentosInolvidables.length > 0 && (
+                    <Link
+                      href="/momentos"
+                      className="text-primary hover:text-surface-tint font-label-md text-label-md text-xs sm:text-sm flex items-center gap-0.5 focus-ring-visible px-2 py-1 rounded-lg"
+                    >
+                      Ver todo el álbum
+                      <span className="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+                    </Link>
+                  )}
+                </div>
+
+                {recuerdosRecientes.length === 0 ? (
+                  <div className="bg-surface rounded-2xl p-lg border border-dashed border-outline-variant/40 text-center py-12 flex flex-col items-center justify-center gap-2">
+                    <span className="material-symbols-outlined text-3xl text-outline-variant/80">photo_library</span>
+                    <h4 className="font-label-md text-on-surface text-sm">Aún no hay recuerdos recientes</h4>
+                    <p className="font-body-md text-on-surface-variant text-xs max-w-[280px]">
+                      Cuando completemos una cita, abre su detalle y sube una foto de recuerdo para comenzar nuestro álbum digital.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-md">
+                      {recuerdosRecientes.map((cita) => {
+                        const imgUrl = cita.fotoUrl || cita.imagenUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=200';
+                        return (
+                          <div
+                            key={cita.id}
+                            onClick={() => setCitaSeleccionada(cita)}
+                            className="bg-white p-2.5 pb-4 rounded-sm border border-neutral-200 shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 hover:scale-[1.01] flex flex-col select-none group"
+                          >
+                            <div className="aspect-square w-full overflow-hidden bg-neutral-100 relative">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={imgUrl}
+                                alt={cita.titulo}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              />
+                              {!cita.fotoUrl && (
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white p-1">
+                                  <span className="material-symbols-outlined text-lg">add_a_photo</span>
+                                </div>
+                              )}
+                            </div>
+                            <h4 className="font-bold text-[11px] sm:text-xs font-literata text-neutral-800 text-center mt-2 line-clamp-1 truncate group-hover:text-primary transition-colors">
+                              {cita.titulo}
+                            </h4>
+                            <p className="text-[9px] text-neutral-500 font-sans text-center mt-0.5">{cita.fecha}</p>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                </div>
-              </div>
-            </section>
-          ) : (
-            <section className="glass-card rounded-xl p-md text-center flex flex-col items-center justify-center gap-sm h-64">
-              <span className="material-symbols-outlined text-4xl text-primary-container" aria-hidden="true">calendar_today</span>
-              <p className="font-label-md text-label-md text-on-surface-variant">No hay próximas citas programadas</p>
-              <Link
-                href="/programar"
-                className="bg-primary text-on-primary font-label-sm text-label-sm px-4 py-2 rounded-full shadow-sm hover:opacity-95 focus-ring-visible"
-              >
-                Programar una ahora
-              </Link>
-            </section>
-          )}
-
-          {/* Quick Stats Grid */}
-          <section className="grid grid-cols-2 gap-md">
-            
-            {/* Stat 1 */}
-            <div className="bg-surface-container-low rounded-xl p-md border border-outline-variant/20 soft-shadow hover:-translate-y-1 transition-transform duration-300">
-              <div className="flex items-center gap-3 mb-sm">
-                <div className="bg-primary-container text-on-primary-container p-2 rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[20px]" aria-hidden="true">event_available</span>
-                </div>
-                <h4 className="font-label-md text-label-md text-on-surface-variant">
-                  Citas este Mes
-                </h4>
-              </div>
-              <p className="font-display-lg-mobile text-display-lg-mobile text-primary">
-                {citasEsteMes.toString().padStart(2, '0')}
-              </p>
-            </div>
-
-            {/* Stat 2 */}
-            <div className="bg-surface-container-low rounded-xl p-md border border-outline-variant/20 soft-shadow hover:-translate-y-1 transition-transform duration-300">
-              <div className="flex items-center gap-3 mb-sm">
-                <div className="bg-secondary-container text-on-secondary-container p-2 rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[20px]" aria-hidden="true">lightbulb</span>
-                </div>
-                <h4 className="font-label-md text-label-md text-on-surface-variant">
-                  Ideas Totales
-                </h4>
-              </div>
-              <p className="font-display-lg-mobile text-display-lg-mobile text-secondary">
-                {totalIdeas.toString().padStart(2, '0')}
-              </p>
-            </div>
-          </section>
-
-        </div>
-
-        {/* Right Column: Recent Ideas (col-span-5) */}
-        <div className="lg:col-span-5">
-          <section className="bg-surface-container-low rounded-xl p-md border border-outline-variant/20 h-full soft-shadow flex flex-col justify-between">
-            
-            <div>
-              <div className="flex justify-between items-center mb-md pb-sm border-b border-secondary-container/50">
-                <h3 className="font-headline-md text-headline-md text-on-surface">
-                  Ideas Recientes
-                </h3>
-                <Link
-                  href="/ideas"
-                  className="text-primary hover:text-surface-tint transition-colors font-label-md text-label-md flex items-center gap-1 focus-ring-visible rounded-lg"
-                >
-                  Ver todas <span className="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
-                </Link>
-              </div>
-
-              {/* Ideas List */}
-              <div className="flex flex-col gap-4">
-                {recentIdeas.map((idea) => (
-                  <Link
-                    key={idea.id}
-                    href="/ideas"
-                    className="flex items-start gap-4 p-3 rounded-lg hover:bg-surface transition-colors cursor-pointer group focus-ring-visible"
-                  >
-                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 relative shadow-inner">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        alt={idea.titulo}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        src={idea.imagenUrl || 'https://images.unsplash.com/photo-1526218626217-dc65a29bb444?auto=format&fit=crop&q=80&w=200'}
-                      />
-                    </div>
-                    
-                    <div className="flex-grow min-w-0">
-                      <div className="flex justify-between items-start gap-2">
-                        <h4 className="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors truncate">
-                          {idea.titulo}
-                        </h4>
-                        <span className="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-sm shrink-0" aria-hidden="true">
-                          favorite_border
-                        </span>
-                      </div>
-                      
-                      <p className="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-1 mt-0.5">
-                        {idea.descripcion}
-                      </p>
-                      
-                      <div className="flex gap-2 mt-2">
-                        <span className="bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-[10px] px-2 py-0.5 rounded-full">
-                          {idea.categoria}
-                        </span>
-                        <span className="bg-surface-variant text-on-surface-variant font-label-sm text-[10px] px-2 py-0.5 rounded-full">
-                          {idea.costo === '$' ? 'Económico' : idea.costo === '$$' ? 'Medio' : 'Elevado'}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-
-                {recentIdeas.length === 0 && (
-                  <p className="text-center font-body-md text-body-md text-on-surface-variant py-md">
-                    No hay ideas de citas todavía.
-                  </p>
                 )}
-              </div>
-            </div>
+              </section>
 
-            <Link
-              href="/ideas?action=new"
-              className="w-full mt-lg py-3 border border-outline-variant text-on-surface-variant rounded-full font-label-md text-label-md hover:bg-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-1 focus-ring-visible"
-            >
-              <span className="material-symbols-outlined text-sm" aria-hidden="true">add</span>
-              Añadir Nueva Idea
-            </Link>
+              {/* Sección 3: Ideas por Agendar */}
+              {ideasSinAgendar.length > 0 && (
+                <section className="space-y-md">
+                  <div className="flex items-center gap-2 border-b border-outline-variant/15 pb-2">
+                    <span className="material-symbols-outlined text-primary text-[22px]">lightbulb</span>
+                    <h3 className="font-headline-md text-xl text-on-surface">
+                      Ideas por Programar ({ideasSinAgendar.length})
+                    </h3>
+                  </div>
 
-          </section>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-md opacity-85 hover:opacity-100 transition-opacity">
+                    {ideasSinAgendar.map((cita) => (
+                      <CitaCard
+                        key={cita.id}
+                        cita={cita}
+                        onSelect={setCitaSeleccionada}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+            </>
+          )}
         </div>
-
       </div>
 
+      {/* Detalle de Cita Modal */}
+      {citaSeleccionada && (
+        <CitaDetalle
+          cita={citaSeleccionada}
+          onClose={() => setCitaSeleccionada(null)}
+          onUploadFoto={subirFotoACita}
+        />
+      )}
     </div>
   );
 }
