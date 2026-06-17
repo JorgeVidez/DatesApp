@@ -41,7 +41,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <img
               alt="Couple profile"
               className="w-full h-full object-cover"
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
+              src="/images/Sofi-Jorge.jpeg"
             />
           </div>
           <div className="text-center">
@@ -92,7 +92,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <img
             alt="User profile"
             className="w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
+            src="/images/Sofi-Jorge.jpeg"
           />
         </div>
         <h1 className="font-headline-md text-headline-md text-primary tracking-tight">
