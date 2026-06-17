@@ -45,7 +45,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             />
           </div>
           <div className="text-center">
-            <h1 className="font-headline-md text-headline-md text-primary">L&apos;Amour Moderne</h1>
+            <h1 className="font-headline-md text-headline-md text-primary">Romantics Dates</h1>
             <p className="font-label-sm text-label-sm text-on-surface-variant">Planning with Intention</p>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           />
         </div>
         <h1 className="font-headline-md text-headline-md text-primary tracking-tight">
-          L&apos;Amour Moderne
+          Romantics Dates
         </h1>
         <button
           aria-label="notificaciones"

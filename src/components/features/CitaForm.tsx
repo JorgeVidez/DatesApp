@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Cita } from '@/types/cita';
 import StarRating from '../ui/StarRating';
 
@@ -56,6 +56,27 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
   const [hora, setHora] = useState('');
   const [notas, setNotas] = useState('');
   const [isCustomImage, setIsCustomImage] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const categoriesList = [
+    { value: 'Gastronomía', label: 'Gastronomía 🍽️' },
+    { value: 'Al Aire Libre', label: 'Al Aire Libre 🌳' },
+    { value: 'Entretenimiento', label: 'Entretenimiento 🎬' },
+    { value: 'Cultura', label: 'Cultura 🎨' },
+    { value: 'Relajado', label: 'Relajado ☕' },
+    { value: 'Aventura', label: 'Aventura 🎒' },
+  ];
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (initialData) {
@@ -169,23 +190,40 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
         </div>
 
         {/* Categoría */}
-        <div>
-          <label htmlFor="categoria" className={labelClass}>
+        <div className="relative" ref={dropdownRef}>
+          <label className={labelClass}>
             Categoría *
           </label>
-          <select
-            id="categoria"
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
-            className={`${inputClass} appearance-none cursor-pointer`}
+          <button
+            type="button"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className={`${inputClass} flex items-center justify-between cursor-pointer`}
           >
-            <option value="Gastronomía">Gastronomía 🍽️</option>
-            <option value="Al Aire Libre">Al Aire Libre 🌳</option>
-            <option value="Entretenimiento">Entretenimiento 🎬</option>
-            <option value="Cultura">Cultura 🎨</option>
-            <option value="Relajado">Relajado ☕</option>
-            <option value="Aventura">Aventura 🎒</option>
-          </select>
+            <span>{categoriesList.find(c => c.value === categoria)?.label || categoria}</span>
+            <span className="material-symbols-outlined text-[18px] transition-transform duration-200" style={{ transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
+              keyboard_arrow_down
+            </span>
+          </button>
+          
+          {isDropdownOpen && (
+            <div className="absolute left-0 right-0 mt-2 bg-surface border border-outline-variant/60 rounded-xl shadow-lg z-30 max-h-60 overflow-y-auto py-1 animate-fade-in">
+              {categoriesList.map((cat) => (
+                <button
+                  key={cat.value}
+                  type="button"
+                  onClick={() => {
+                    setCategoria(cat.value);
+                    setIsDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center gap-2 hover:bg-secondary-container/30 text-on-surface ${
+                    categoria === cat.value ? 'bg-secondary-container/50 font-bold text-primary' : ''
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Descripción */}
@@ -208,7 +246,7 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
         <div>
           <label className={labelClass}>Calificación / Preferencia</label>
           <div className="h-[46px] flex items-center bg-gradient-to-b from-surface to-surface-container-lowest border border-outline-variant/60 rounded-xl px-4 shadow-sm">
-            <StarRating rating={puntuacion} onChange={setPuntuacion} size="lg" />
+            <StarRating rating={puntuacion} onChange={setPuntuacion} size="md" />
           </div>
         </div>
 
@@ -221,13 +259,13 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
                 key={option}
                 type="button"
                 onClick={() => setCosto(option)}
-                className={`py-2 rounded-lg font-label-md text-label-md transition-all focus-ring-visible ${
+                className={`py-2 rounded-lg font-label-md text-label-md transition-all focus-ring-visible cursor-pointer ${
                   costo === option
                     ? 'bg-primary text-on-primary shadow-sm font-bold'
                     : 'text-on-surface-variant hover:bg-secondary-container/30'
                 }`}
               >
-                {option === '$' ? 'Económico' : option === '$$' ? 'Medio' : 'Elevado'}
+                {option}
               </button>
             ))}
           </div>

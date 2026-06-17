@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Cita } from '@/types/cita';
 import * as citaService from '@/services/citaService';
+import imageCompression from 'browser-image-compression';
 
 export interface CitasContextType {
   citas: Cita[];
@@ -185,9 +186,20 @@ export function CitasProvider({ children }: { children: ReactNode }) {
 
   const subirFotoACita = async (citaId: string, file: File) => {
     try {
+      // Configuración de compresión de imágenes
+      const options = {
+        maxSizeMB: 0.6,          // Peso máximo objetivo de ~600 KB
+        maxWidthOrHeight: 1200,  // Dimensión máxima (ancho o alto) de 1200px
+        useWebWorker: true,
+      };
+
+      console.log(`[Compresión] Peso original: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+      const compressedFile = await imageCompression(file, options);
+      console.log(`[Compresión] Peso final: ${(compressedFile.size / 1024).toFixed(2)} KB`);
+
       if (usingMockData) {
-        // En modo mockup local, creamos un object URL temporal
-        const fakeUrl = URL.createObjectURL(file);
+        // En modo mockup local, creamos un object URL del archivo comprimido
+        const fakeUrl = URL.createObjectURL(compressedFile);
         // Esperamos 1s para simular la carga
         await new Promise((resolve) => setTimeout(resolve, 1000));
         
@@ -211,7 +223,8 @@ export function CitasProvider({ children }: { children: ReactNode }) {
           });
         }
       } else {
-        const publicUrl = await citaService.uploadCitaFoto(citaId, file);
+        // En modo producción, subimos el archivo comprimido a Supabase Storage
+        const publicUrl = await citaService.uploadCitaFoto(citaId, compressedFile);
         
         setCitas((prev) =>
           prev.map((c) => {
