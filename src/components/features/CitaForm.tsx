@@ -10,38 +10,7 @@ interface CitaFormProps {
   onCancel?: () => void;
 }
 
-const IMAGE_PRESETS = [
-  {
-    name: 'Picnic',
-    url: 'https://images.unsplash.com/photo-1526218626217-dc65a29bb444?auto=format&fit=crop&q=80&w=800',
-    description: 'Picnic al atardecer en el parque',
-  },
-  {
-    name: 'Cena',
-    url: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800',
-    description: 'Cena a la luz de las velas',
-  },
-  {
-    name: 'Cine',
-    url: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=800',
-    description: 'Cine bajo las estrellas o sala clásica',
-  },
-  {
-    name: 'Cafetería',
-    url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=800',
-    description: 'Café de especialidad o bistró acogedor',
-  },
-  {
-    name: 'Cultura',
-    url: 'https://images.unsplash.com/photo-1580136579312-94651dfd596d?auto=format&fit=crop&q=80&w=800',
-    description: 'Galería de arte o museo',
-  },
-  {
-    name: 'Música/Show',
-    url: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&q=80&w=800',
-    description: 'Concierto o teatro en vivo',
-  },
-];
+
 
 export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormProps) {
   const [titulo, setTitulo] = useState('');
@@ -51,11 +20,9 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
   const [puntuacion, setPuntuacion] = useState(5);
   const [costo, setCosto] = useState<Cita['costo']>('$$');
   const [duracion, setDuracion] = useState('');
-  const [imagenUrl, setImagenUrl] = useState(IMAGE_PRESETS[1].url);
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
   const [notas, setNotas] = useState('');
-  const [isCustomImage, setIsCustomImage] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -87,20 +54,11 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
       setPuntuacion(initialData.puntuacion);
       setCosto(initialData.costo);
       setDuracion(initialData.duracion || '');
-      setImagenUrl(initialData.imagenUrl || '');
       setFecha(initialData.fecha || '');
       setHora(initialData.hora || '');
       setNotas(initialData.notas || '');
-
-      const isPreset = IMAGE_PRESETS.some((preset) => preset.url === initialData.imagenUrl);
-      setIsCustomImage(!isPreset && !!initialData.imagenUrl);
     }
   }, [initialData]);
-
-  const handlePresetSelect = (url: string) => {
-    setIsCustomImage(false);
-    setImagenUrl(url);
-  };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +75,6 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
       puntuacion,
       costo,
       duracion: duracion || undefined,
-      imagenUrl: imagenUrl || undefined,
       fecha: fecha || undefined,
       hora: hora || undefined,
       notas: notas || undefined,
@@ -131,11 +88,9 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
       setPuntuacion(5);
       setCosto('$$');
       setDuracion('');
-      setImagenUrl(IMAGE_PRESETS[1].url);
       setFecha('');
       setHora('');
       setNotas('');
-      setIsCustomImage(false);
     }
   };
 
@@ -301,73 +256,7 @@ export default function CitaForm({ onSubmit, initialData, onCancel }: CitaFormPr
           />
         </div>
 
-        {/* Imagen de Portada */}
-        <div className="col-span-1 md:col-span-2">
-          <label className={labelClass}>Imagen Ilustrativa</label>
-          <div className="flex gap-2 mb-3">
-            <button
-              type="button"
-              onClick={() => setIsCustomImage(false)}
-              className={`px-4 py-2 rounded-full font-label-sm text-label-sm transition-all focus-ring-visible ${
-                !isCustomImage
-                  ? 'bg-secondary-container text-on-secondary-container font-bold shadow-sm'
-                  : 'bg-surface-container text-on-surface-variant hover:bg-surface-variant'
-              }`}
-            >
-              Elegir de Galería
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsCustomImage(true)}
-              className={`px-4 py-2 rounded-full font-label-sm text-label-sm transition-all focus-ring-visible ${
-                isCustomImage
-                  ? 'bg-secondary-container text-on-secondary-container font-bold shadow-sm'
-                  : 'bg-surface-container text-on-surface-variant hover:bg-surface-variant'
-              }`}
-            >
-              Enlace personalizado
-            </button>
-          </div>
 
-          {!isCustomImage ? (
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-              {IMAGE_PRESETS.map((preset) => {
-                const isSelected = imagenUrl === preset.url;
-                return (
-                  <button
-                    key={preset.name}
-                    type="button"
-                    onClick={() => handlePresetSelect(preset.url)}
-                    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all focus-ring-visible ${
-                      isSelected
-                        ? 'border-primary ring-2 ring-primary-container scale-95'
-                        : 'border-transparent hover:border-outline-variant opacity-80 hover:opacity-100'
-                    }`}
-                    title={preset.description}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={preset.url}
-                      alt={preset.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 bg-black/50 text-white font-label-sm text-[10px] py-0.5 text-center truncate">
-                      {preset.name}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          ) : (
-            <input
-              type="url"
-              value={imagenUrl}
-              onChange={(e) => setImagenUrl(e.target.value)}
-              placeholder="https://ejemplo.com/mi-imagen.jpg"
-              className={inputClass}
-            />
-          )}
-        </div>
 
         {/* Notas para tu Pareja */}
         <div className="col-span-1 md:col-span-2">

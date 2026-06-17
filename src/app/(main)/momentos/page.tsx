@@ -177,30 +177,27 @@ export default function MomentosInolvidablesPage() {
                 )}`}
               >
                 {/* Photo Area */}
-                <div className="aspect-square w-full overflow-hidden bg-neutral-100 relative shadow-inner">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={moment.fotoUrl || moment.imagenUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800'}
-                    alt={moment.titulo}
-                    className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
-                      hasUploadedFoto ? 'grayscale-[5%] group-hover:grayscale-0' : 'brightness-[85%]'
-                    }`}
-                  />
+                <div className="aspect-square w-full overflow-hidden bg-neutral-100 relative shadow-inner flex items-center justify-center">
+                  {hasUploadedFoto ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={moment.fotoUrl}
+                      alt={moment.titulo}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 grayscale-[5%] group-hover:grayscale-0"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-neutral-50 to-neutral-200 flex flex-col items-center justify-center text-neutral-400 gap-2 p-4">
+                      <span className="material-symbols-outlined text-3xl text-neutral-400 group-hover:text-primary transition-colors">add_a_photo</span>
+                      <span className="font-label-sm text-[10px] font-bold tracking-wider uppercase text-neutral-500">
+                        Agregar Recuerdo
+                      </span>
+                    </div>
+                  )}
                   
                   {/* Category overlay */}
                   <span className="absolute top-2 left-2 bg-neutral-900/70 text-white font-label-sm text-[10px] px-2.5 py-0.5 rounded-full backdrop-blur-xs">
                     {moment.categoria}
                   </span>
-
-                  {/* Missing Photo Camera Icon Overlay */}
-                  {!hasUploadedFoto && (
-                    <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white gap-2 p-4">
-                      <span className="material-symbols-outlined text-3xl animate-pulse">add_a_photo</span>
-                      <span className="font-label-sm text-[11px] font-bold text-center tracking-wide uppercase">
-                        Agregar Recuerdo
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 {/* Polaroid Caption Area */}

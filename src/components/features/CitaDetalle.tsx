@@ -109,14 +109,20 @@ export default function CitaDetalle({ cita, onClose, onUploadFoto }: CitaDetalle
         </div>
 
         {/* Portada / Héroe */}
-        <div className="relative h-44 sm:h-56 w-full overflow-hidden shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={listFotos[activeFotoIndex] || cita.imagenUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800'}
-            alt={cita.titulo}
-            className="w-full h-full object-cover blur-[1px]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-black/25"></div>
+        <div className="relative h-44 sm:h-56 w-full overflow-hidden shrink-0 bg-gradient-to-br from-primary-container/30 via-surface-container-low to-secondary-container/20">
+          {hasFotos ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={listFotos[activeFotoIndex]}
+                alt={cita.titulo}
+                className="w-full h-full object-cover blur-[1px]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-black/25"></div>
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+          )}
           
           <div className="absolute bottom-4 left-6 right-16">
             <span className="bg-secondary-container text-on-secondary-container font-label-sm text-xs px-3 py-1 rounded-full shadow-sm mb-2 inline-block">
