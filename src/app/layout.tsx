@@ -16,7 +16,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "L'Amour Moderne - Registro de Citas",
+  title: "Romantics Dates - Registro de Citas",
   description: "Planificando momentos románticos con intención y estética moderna.",
 };
 

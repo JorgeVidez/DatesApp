@@ -8,14 +8,18 @@ interface CitaCardProps {
   cita: Cita;
   onEdit?: (cita: Cita) => void;
   onDelete?: (id: string) => void;
+  onSelect?: (cita: Cita) => void;
 }
 
-export default function CitaCard({ cita, onEdit, onDelete }: CitaCardProps) {
+export default function CitaCard({ cita, onEdit, onDelete, onSelect }: CitaCardProps) {
   const fallbackImage = 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800';
-  const imgUrl = cita.imagenUrl || fallbackImage;
+  const imgUrl = cita.fotoUrl || cita.imagenUrl || fallbackImage;
 
   return (
-    <article className="bg-surface rounded-xl overflow-hidden border border-outline-variant/20 custom-card-shadow transition-all duration-300 relative group cursor-pointer flex flex-col h-full focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
+    <article 
+      onClick={() => onSelect?.(cita)}
+      className="bg-surface rounded-xl overflow-hidden border border-outline-variant/20 custom-card-shadow transition-all duration-300 relative group cursor-pointer flex flex-col h-full focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+    >
       {/* Edit/Delete floating action overlay */}
       <div className="absolute top-3 right-3 z-10 flex gap-2">
         {onEdit && (

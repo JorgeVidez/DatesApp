@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useCitas } from '@/context/CitasContext';
+import { useCitas } from '@/hooks/useCitas';
 import { Cita } from '@/types/cita';
 import CitaCard from '@/components/features/CitaCard';
 import CitaForm from '@/components/features/CitaForm';

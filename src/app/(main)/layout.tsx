@@ -19,6 +19,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       icon: 'favorite',
     },
     {
+      href: '/momentos',
+      label: 'Momentos Inolvidables',
+      icon: 'photo_library',
+    },
+    {
       href: '/randomizer',
       label: 'Selector al Azar',
       icon: 'casino',
@@ -36,11 +41,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <img
               alt="Couple profile"
               className="w-full h-full object-cover"
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
+              src="/images/Sofi-Jorge.jpeg"
             />
           </div>
           <div className="text-center">
-            <h1 className="font-headline-md text-headline-md text-primary">L&apos;Amour Moderne</h1>
+            <h1 className="font-headline-md text-headline-md text-primary">Romantics Dates</h1>
             <p className="font-label-sm text-label-sm text-on-surface-variant">Planning with Intention</p>
           </div>
         </div>
@@ -87,11 +92,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <img
             alt="User profile"
             className="w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
+            src="/images/Sofi-Jorge.jpeg"
           />
         </div>
         <h1 className="font-headline-md text-headline-md text-primary tracking-tight">
-          L&apos;Amour Moderne
+          Romantics Dates
         </h1>
         <button
           aria-label="notificaciones"
