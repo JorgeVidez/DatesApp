@@ -115,85 +115,148 @@ export default function RandomizerPage() {
             </h2>
           </div>
 
-          {/* Result Split Card Container */}
-          <div className="bg-surface rounded-xl overflow-hidden card-shadow border border-outline-variant/40 flex flex-col md:flex-row w-full">
-            
-            {/* Image Side */}
-            <div className="md:w-1/2 h-64 md:h-auto relative bg-surface-container-highest min-h-[240px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt={selectedCita.titulo}
-                className="w-full h-full object-cover"
-                src={selectedCita.imagenUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800'}
-              />
-              <div className="absolute top-4 left-4 flex gap-2">
-                <span className="px-3 py-1 bg-white/95 dark:bg-surface-container-lowest/95 backdrop-blur-sm text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/30 shadow-sm">
-                  {selectedCita.categoria}
-                </span>
-                <span className="px-3 py-1 bg-white/95 dark:bg-surface-container-lowest/95 backdrop-blur-sm text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/30 shadow-sm">
-                  <StarRating rating={selectedCita.puntuacion} size="sm" />
-                </span>
-              </div>
-            </div>
-
-            {/* Content Side */}
-            <div className="p-md md:p-lg md:w-1/2 flex flex-col justify-between bg-surface-bright border-t md:border-t-0 md:border-l border-outline-variant/20">
-              
-              <div className="flex flex-col gap-sm">
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  {selectedCita.descripcion}
-                </p>
-
-                {selectedCita.notas && (
-                  <p className="font-body-md text-body-md italic text-primary/80 border-l-2 border-primary/30 pl-3 py-0.5 text-sm">
-                    &quot;{selectedCita.notas}&quot;
-                  </p>
-                )}
-
-                <div className="flex flex-col gap-3 my-4">
-                  <div className="flex items-center gap-3 text-on-surface-variant">
-                    <span className="material-symbols-outlined text-secondary" aria-hidden="true">schedule</span>
-                    <span className="font-label-md text-label-md">
-                      Duración: {selectedCita.duracion || '2-3 horas'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 text-on-surface-variant">
-                    <span className="material-symbols-outlined text-secondary" aria-hidden="true">payments</span>
-                    <span className="font-label-md text-label-md">
-                      Costo Estimado: {selectedCita.costo === '$' ? 'Económico' : selectedCita.costo === '$$' ? 'Medio' : 'Elevado'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 text-on-surface-variant">
-                    <span className="material-symbols-outlined text-secondary" aria-hidden="true">location_on</span>
-                    <span className="font-label-md text-label-md">
-                      Lugar: {selectedCita.lugar}
-                    </span>
-                  </div>
+          {/* Result Card Container */}
+          {selectedCita.fotoUrl ? (
+            <div className="bg-surface rounded-xl overflow-hidden card-shadow border border-outline-variant/40 flex flex-col md:flex-row w-full">
+              {/* Image Side (Memory Photo) */}
+              <div className="md:w-1/2 h-64 md:h-auto relative bg-surface-container-highest min-h-[240px]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  alt={selectedCita.titulo}
+                  className="w-full h-full object-cover"
+                  src={selectedCita.fotoUrl}
+                />
+                <div className="absolute top-4 left-4 flex gap-2">
+                  <span className="px-3 py-1 bg-white/95 dark:bg-surface-container-lowest/95 backdrop-blur-sm text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/30 shadow-sm">
+                    {selectedCita.categoria}
+                  </span>
+                  <span className="px-3 py-1 bg-white/95 dark:bg-surface-container-lowest/95 backdrop-blur-sm text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/30 shadow-sm">
+                    <StarRating rating={selectedCita.puntuacion} size="sm" />
+                  </span>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 mt-lg pt-sm border-t border-outline-variant/20">
-                <Link
-                  href={`/programar?id=${selectedCita.id}`}
-                  className="flex-grow py-3 px-6 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:opacity-90 transition-all text-center focus-ring-visible shadow-md shadow-primary/20"
-                >
-                  Programar esta Cita
-                </Link>
-                
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="py-3 px-6 bg-transparent border border-outline text-on-surface rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2 focus-ring-visible"
-                >
-                  <span className="material-symbols-outlined text-[18px]" aria-hidden="true">refresh</span>
-                  Otra Opción
-                </button>
+              {/* Content Side */}
+              <div className="p-md md:p-lg md:w-1/2 flex flex-col justify-between bg-surface-bright border-t md:border-t-0 md:border-l border-outline-variant/20">
+                <div className="flex flex-col gap-sm">
+                  <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                    {selectedCita.descripcion}
+                  </p>
+
+                  {selectedCita.notas && (
+                    <p className="font-body-md text-body-md italic text-primary/80 border-l-2 border-primary/30 pl-3 py-0.5 text-sm">
+                      &quot;{selectedCita.notas}&quot;
+                    </p>
+                  )}
+
+                  <div className="flex flex-col gap-3 my-4">
+                    <div className="flex items-center gap-3 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-secondary" aria-hidden="true">schedule</span>
+                      <span className="font-label-md text-label-md">
+                        Duración: {selectedCita.duracion || '2-3 horas'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-secondary" aria-hidden="true">payments</span>
+                      <span className="font-label-md text-label-md">
+                        Costo Estimado: {selectedCita.costo === '$' ? 'Económico' : selectedCita.costo === '$$' ? 'Medio' : 'Elevado'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-secondary" aria-hidden="true">location_on</span>
+                      <span className="font-label-md text-label-md">
+                        Lugar: {selectedCita.lugar}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 mt-lg pt-sm border-t border-outline-variant/20">
+                  <Link
+                    href={`/programar?id=${selectedCita.id}`}
+                    className="flex-grow py-3 px-6 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:opacity-90 transition-all text-center focus-ring-visible shadow-md shadow-primary/20"
+                  >
+                    Programar esta Cita
+                  </Link>
+                  
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="py-3 px-6 bg-transparent border border-outline text-on-surface rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2 focus-ring-visible"
+                  >
+                    <span className="material-symbols-outlined text-[18px]" aria-hidden="true">refresh</span>
+                    Otra Opción
+                  </button>
+                </div>
               </div>
-
             </div>
+          ) : (
+            <div className="bg-surface rounded-xl overflow-hidden card-shadow border border-outline-variant/40 flex flex-col w-full max-w-xl mx-auto">
+              <div className="p-md md:p-lg flex flex-col justify-between bg-surface-bright">
+                <div className="flex flex-col gap-sm">
+                  <div className="flex gap-2 mb-2">
+                    <span className="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm shadow-sm">
+                      {selectedCita.categoria}
+                    </span>
+                    <span className="px-3 py-1 bg-surface-container text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant/30 shadow-sm">
+                      <StarRating rating={selectedCita.puntuacion} size="sm" />
+                    </span>
+                  </div>
 
-          </div>
+                  <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                    {selectedCita.descripcion}
+                  </p>
+
+                  {selectedCita.notas && (
+                    <p className="font-body-md text-body-md italic text-primary/80 border-l-2 border-primary/30 pl-3 py-0.5 text-sm">
+                      &quot;{selectedCita.notas}&quot;
+                    </p>
+                  )}
+
+                  <div className="flex flex-col gap-3 my-4 border-t border-outline-variant/10 pt-4">
+                    <div className="flex items-center gap-3 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-secondary" aria-hidden="true">schedule</span>
+                      <span className="font-label-md text-label-md">
+                        Duración: {selectedCita.duracion || '2-3 horas'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-secondary" aria-hidden="true">payments</span>
+                      <span className="font-label-md text-label-md">
+                        Costo Estimado: {selectedCita.costo === '$' ? 'Económico' : selectedCita.costo === '$$' ? 'Medio' : 'Elevado'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-on-surface-variant">
+                      <span className="material-symbols-outlined text-secondary" aria-hidden="true">location_on</span>
+                      <span className="font-label-md text-label-md">
+                        Lugar: {selectedCita.lugar}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 mt-lg pt-sm border-t border-outline-variant/20">
+                  <Link
+                    href={`/programar?id=${selectedCita.id}`}
+                    className="flex-grow py-3 px-6 bg-primary text-on-primary rounded-full font-label-md text-label-md hover:opacity-90 transition-all text-center focus-ring-visible shadow-md shadow-primary/20"
+                  >
+                    Programar esta Cita
+                  </Link>
+                  
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="py-3 px-6 bg-transparent border border-outline text-on-surface rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2 focus-ring-visible"
+                  >
+                    <span className="material-symbols-outlined text-[18px]" aria-hidden="true">refresh</span>
+                    Otra Opción
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
         </div>
       )}

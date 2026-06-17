@@ -191,23 +191,24 @@ export default function Dashboard() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-md">
                       {recuerdosRecientes.map((cita) => {
-                        const imgUrl = cita.fotoUrl || cita.imagenUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=200';
+                        const hasFoto = !!cita.fotoUrl;
                         return (
                           <div
                             key={cita.id}
                             onClick={() => setCitaSeleccionada(cita)}
                             className="bg-white p-2.5 pb-4 rounded-sm border border-neutral-200 shadow-sm hover:shadow-md cursor-pointer transition-all duration-300 hover:scale-[1.01] flex flex-col select-none group"
                           >
-                            <div className="aspect-square w-full overflow-hidden bg-neutral-100 relative">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={imgUrl}
-                                alt={cita.titulo}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                              />
-                              {!cita.fotoUrl && (
-                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white p-1">
-                                  <span className="material-symbols-outlined text-lg">add_a_photo</span>
+                            <div className="aspect-square w-full overflow-hidden bg-neutral-100 relative flex items-center justify-center">
+                              {hasFoto ? (
+                                <img
+                                  src={cita.fotoUrl}
+                                  alt={cita.titulo}
+                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                              ) : (
+                                <div className="absolute inset-0 bg-gradient-to-br from-neutral-50 to-neutral-200 flex flex-col items-center justify-center gap-1.5 p-4 text-center">
+                                  <span className="material-symbols-outlined text-2xl text-neutral-400 group-hover:text-primary transition-colors">add_a_photo</span>
+                                  <span className="text-[9px] font-bold tracking-wider uppercase text-neutral-500">Subir Recuerdo</span>
                                 </div>
                               )}
                             </div>

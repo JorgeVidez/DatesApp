@@ -128,16 +128,18 @@ function ProgramarContent() {
                     </span>
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row gap-md items-start sm:items-center relative z-10">
-                    <div className="w-full sm:w-28 h-28 rounded-lg overflow-hidden shrink-0 border border-outline-variant/30">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        alt={activeCita.titulo}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        src={activeCita.imagenUrl || 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=200'}
-                      />
-                    </div>
-                    <div>
+                  <div className="flex flex-col sm:flex-row gap-md items-start sm:items-center relative z-10 w-full">
+                    {activeCita.fotoUrl && (
+                      <div className="w-full sm:w-28 h-28 rounded-lg overflow-hidden shrink-0 border border-outline-variant/30">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          alt={activeCita.titulo}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          src={activeCita.fotoUrl}
+                        />
+                      </div>
+                    )}
+                    <div className="flex-grow">
                       <h3 className="font-headline-md text-xl text-on-surface mb-1">
                         {activeCita.titulo}
                       </h3>
