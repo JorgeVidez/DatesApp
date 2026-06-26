@@ -21,55 +21,11 @@ export interface CitasContextType {
 // Exportamos el contexto para que pueda ser importado por el hook personalizado
 export const CitasContext = createContext<CitasContextType | undefined>(undefined);
 
-// Datos iniciales de mockup por si Supabase no está configurado o falla
-const INITIAL_CITAS: Cita[] = [
-  {
-    id: '1',
-    titulo: 'Picnic al Atardecer en el Parque',
-    descripcion: 'Una tarde relajada disfrutando de la naturaleza con una cesta preparada, quesos artesanales y vino blanco.',
-    lugar: 'Barrio Francés',
-    categoria: 'Al Aire Libre',
-    puntuacion: 4,
-    fecha: 'Sáb, 20 Jun',
-    costo: '$',
-    duracion: 'Aprox. 2 horas',
-    imagenUrl: 'https://images.unsplash.com/photo-1526218626217-dc65a29bb444?auto=format&fit=crop&q=80&w=800',
-    notas: 'Llevar manta para el pasto y repelente.',
-  },
-  {
-    id: '2',
-    titulo: 'Cena Romántica Italiana',
-    descripcion: 'Reserva en ese pequeño restaurante italiano iluminado con velas. Perfecto para conversaciones profundas y buena pasta.',
-    lugar: 'Bistro de París',
-    categoria: 'Gastronomía',
-    puntuacion: 5,
-    fecha: 'Vie, 26 Jun',
-    costo: '$$$',
-    duracion: '2-3 horas',
-    imagenUrl: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800',
-    notas: 'Ponerse algo elegante. Sorpresa al final de la noche.',
-  },
-  {
-    id: '3',
-    titulo: 'Cine de Verano',
-    descripcion: 'Noche de película bajo las estrellas. Llevaremos mantas cómodas y nuestras bebidas favoritas para disfrutar la función.',
-    lugar: 'Jardín Botánico',
-    categoria: 'Entretenimiento',
-    puntuacion: 4,
-    fecha: 'Sáb, 4 Jul',
-    costo: '$$',
-    duracion: 'Aprox. 3 horas',
-    imagenUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=800',
-    notas: 'Llevar almohadones cómodos.',
-  },
-];
-
 export function CitasProvider({ children }: { children: ReactNode }) {
   const [citas, setCitas] = useState<Cita[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [citaSeleccionada, setCitaSeleccionada] = useState<Cita | null>(null);
-  const [usingMockData, setUsingMockData] = useState<boolean>(false);
 
   // Cargar citas al montar el componente
   useEffect(() => {
@@ -86,17 +42,14 @@ export function CitasProvider({ children }: { children: ReactNode }) {
         process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://your-project-id.supabase.co';
 
       if (!isConfigured) {
-        throw new Error('Supabase no está configurado. Usando base de datos simulada local.');
+        throw new Error('Supabase no está configurado en las variables de entorno.');
       }
 
       const data = await citaService.getCitas();
       setCitas(data);
-      setUsingMockData(false);
     } catch (err: any) {
-      console.warn('Conexión a Supabase fallida. Usando datos mock locales:', err.message);
-      setCitas(INITIAL_CITAS);
+      console.error('Error al cargar citas de Supabase:', err.message);
       setError(err.message || 'Error de conexión');
-      setUsingMockData(true);
     } finally {
       setLoading(false);
     }
@@ -105,26 +58,11 @@ export function CitasProvider({ children }: { children: ReactNode }) {
   const addCita = async (formData: Omit<Cita, 'id'>) => {
     setLoading(true);
     try {
-      if (usingMockData) {
-        // Simular inserción local
-        const newCita: Cita = {
-          ...formData,
-          id: Date.now().toString(),
-        };
-        setCitas((prev) => [newCita, ...prev]);
-      } else {
-        const newCita = await citaService.addCita(formData);
-        setCitas((prev) => [newCita, ...prev]);
-      }
+      const newCita = await citaService.addCita(formData);
+      setCitas((prev) => [newCita, ...prev]);
     } catch (err: any) {
       console.error('Error al agregar cita:', err);
-      // Fallback local en caso de error de red
-      const newCita: Cita = {
-        ...formData,
-        id: Date.now().toString(),
-      };
-      setCitas((prev) => [newCita, ...prev]);
-      alert('Error en el servidor. La cita se guardó localmente de forma temporal.');
+      alert('Error al agregar la cita en Supabase.');
     } finally {
       setLoading(false);
     }
@@ -133,16 +71,10 @@ export function CitasProvider({ children }: { children: ReactNode }) {
   const updateCita = async (updatedData: Cita) => {
     setLoading(true);
     try {
-      if (usingMockData) {
-        setCitas((prev) =>
-          prev.map((c) => (c.id === updatedData.id ? updatedData : c))
-        );
-      } else {
-        const updated = await citaService.updateCitaService(updatedData);
-        setCitas((prev) =>
-          prev.map((c) => (c.id === updated.id ? updated : c))
-        );
-      }
+      const updated = await citaService.updateCitaService(updatedData);
+      setCitas((prev) =>
+        prev.map((c) => (c.id === updated.id ? updated : c))
+      );
       
       // Actualizar la cita seleccionada si corresponde
       if (citaSeleccionada?.id === updatedData.id) {
@@ -150,13 +82,7 @@ export function CitasProvider({ children }: { children: ReactNode }) {
       }
     } catch (err: any) {
       console.error('Error al actualizar cita:', err);
-      // Fallback local
-      setCitas((prev) =>
-        prev.map((c) => (c.id === updatedData.id ? updatedData : c))
-      );
-      if (citaSeleccionada?.id === updatedData.id) {
-        setCitaSeleccionada(updatedData);
-      }
+      alert('Error al actualizar la cita en Supabase.');
     } finally {
       setLoading(false);
     }
@@ -165,20 +91,14 @@ export function CitasProvider({ children }: { children: ReactNode }) {
   const deleteCita = async (id: string) => {
     setLoading(true);
     try {
-      if (!usingMockData) {
-        await citaService.deleteCitaService(id);
-      }
+      await citaService.deleteCitaService(id);
       setCitas((prev) => prev.filter((c) => c.id !== id));
       if (citaSeleccionada?.id === id) {
         setCitaSeleccionada(null);
       }
     } catch (err: any) {
       console.error('Error al eliminar cita:', err);
-      // Fallback local
-      setCitas((prev) => prev.filter((c) => c.id !== id));
-      if (citaSeleccionada?.id === id) {
-        setCitaSeleccionada(null);
-      }
+      alert('Error al eliminar la cita de Supabase.');
     } finally {
       setLoading(false);
     }
@@ -197,54 +117,27 @@ export function CitasProvider({ children }: { children: ReactNode }) {
       const compressedFile = await imageCompression(file, options);
       console.log(`[Compresión] Peso final: ${(compressedFile.size / 1024).toFixed(2)} KB`);
 
-      if (usingMockData) {
-        // En modo mockup local, creamos un object URL del archivo comprimido
-        const fakeUrl = URL.createObjectURL(compressedFile);
-        // Esperamos 1s para simular la carga
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        
-        setCitas((prev) =>
-          prev.map((c) => {
-            if (c.id === citaId) {
-              const existing = c.fotos || [];
-              const updatedFotos = [...existing, fakeUrl];
-              return { ...c, fotoUrl: fakeUrl, fotos: updatedFotos };
-            }
-            return c;
-          })
-        );
-
-        if (citaSeleccionada?.id === citaId) {
-          setCitaSeleccionada((prev) => {
-            if (!prev) return null;
-            const existing = prev.fotos || [];
-            const updatedFotos = [...existing, fakeUrl];
-            return { ...prev, fotoUrl: fakeUrl, fotos: updatedFotos };
-          });
-        }
-      } else {
-        // En modo producción, subimos el archivo comprimido a Supabase Storage
-        const publicUrl = await citaService.uploadCitaFoto(citaId, compressedFile);
-        
-        setCitas((prev) =>
-          prev.map((c) => {
-            if (c.id === citaId) {
-              const existing = c.fotos || [];
-              const updatedFotos = [...existing, publicUrl];
-              return { ...c, fotoUrl: publicUrl, fotos: updatedFotos };
-            }
-            return c;
-          })
-        );
-
-        if (citaSeleccionada?.id === citaId) {
-          setCitaSeleccionada((prev) => {
-            if (!prev) return null;
-            const existing = prev.fotos || [];
+      // En modo producción, subimos el archivo comprimido a Supabase Storage
+      const publicUrl = await citaService.uploadCitaFoto(citaId, compressedFile);
+      
+      setCitas((prev) =>
+        prev.map((c) => {
+          if (c.id === citaId) {
+            const existing = c.fotos || [];
             const updatedFotos = [...existing, publicUrl];
-            return { ...prev, fotoUrl: publicUrl, fotos: updatedFotos };
-          });
-        }
+            return { ...c, fotoUrl: publicUrl, fotos: updatedFotos };
+          }
+          return c;
+        })
+      );
+
+      if (citaSeleccionada?.id === citaId) {
+        setCitaSeleccionada((prev) => {
+          if (!prev) return null;
+          const existing = prev.fotos || [];
+          const updatedFotos = [...existing, publicUrl];
+          return { ...prev, fotoUrl: publicUrl, fotos: updatedFotos };
+        });
       }
     } catch (err: any) {
       console.error('Error al subir la foto de la cita:', err);
